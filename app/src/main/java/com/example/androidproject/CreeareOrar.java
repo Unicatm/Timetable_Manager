@@ -1,6 +1,8 @@
 package com.example.androidproject;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class CreeareOrar extends AppCompatActivity {
+
+    Spinner spnAnFac;
+    Spinner spnStartOrar;
+    Spinner spnFinalOrar;
+    Spinner spnDurataActivitate;
+
+    String[] arrAniFacultate = {"1","2","3","4"};
+    String[] arrOreStart = {"7:00","7:30","8:00","8:30","9:00"};
+    String[] arrOreFinal = {"17:00","17:30","18:00","18:30","19:00","19:30"};
+    String[] arrDurataActivitate = {"1 ora","1:30 ora","2 ore"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +33,27 @@ public class CreeareOrar extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        spnAnFac = findViewById(R.id.spnAnFac);
+        spnStartOrar = findViewById(R.id.spnStartOrar);
+        spnFinalOrar = findViewById(R.id.spnFinalOrar);
+        spnDurataActivitate = findViewById(R.id.spnDurataActivitate);
+
+        ArrayAdapter adapterAn =new ArrayAdapter(this, android.R.layout.simple_spinner_item, arrAniFacultate);
+        adapterAn.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnAnFac.setAdapter(adapterAn);
+
+        ArrayAdapter adapterOraStart =new ArrayAdapter(this, android.R.layout.simple_spinner_item, arrOreStart);
+        adapterOraStart.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnStartOrar.setAdapter(adapterOraStart);
+
+        ArrayAdapter adapterOraFin =new ArrayAdapter(this, android.R.layout.simple_spinner_item, arrOreFinal);
+        adapterOraFin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnFinalOrar.setAdapter(adapterOraFin);
+
+        ArrayAdapter adapterDurataAct =new ArrayAdapter(this, android.R.layout.simple_spinner_item, arrDurataActivitate);
+        adapterOraFin.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDurataActivitate.setAdapter(adapterDurataAct);
+
     }
 }
