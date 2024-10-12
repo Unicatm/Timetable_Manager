@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.androidproject"
-        minSdk 16
+        minSdk 21
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -29,7 +29,8 @@ android {
 }
 
 dependencies {
-
+    implementation libs.appcompat.v110
+    implementation libs.material.v100
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
