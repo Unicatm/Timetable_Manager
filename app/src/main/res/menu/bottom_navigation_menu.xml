@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pgMaterii"
+        android:enabled="true"
+        android:icon="@drawable/materii_icon"
+        android:title="Materii"/>
+    <item
+        android:id="@+id/pgOrar"
+        android:enabled="true"
+        android:icon="@drawable/orar_icon"
+        android:title="Orar"/>
+    <item
+        android:id="@+id/pgAnunturi"
+        android:enabled="true"
+        android:icon="@drawable/annnouncements_icon"
+        android:title="Anunțuri"/>
+    <item
+        android:id="@+id/pgNotite"
+        android:enabled="true"
+        android:icon="@drawable/notes_icon"
+        android:title="Notițe"/>
+    <item
+        android:id="@+id/pgSetari"
+        android:enabled="true"
+        android:icon="@drawable/settings_icon"
+        android:title="Setări"/>
+</menu>

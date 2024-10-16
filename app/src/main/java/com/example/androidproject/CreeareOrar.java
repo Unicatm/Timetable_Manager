@@ -1,7 +1,10 @@
 package com.example.androidproject;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +25,7 @@ public class CreeareOrar extends AppCompatActivity {
     String[] arrOreFinal = {"17:00","17:30","18:00","18:30","19:00","19:30"};
     String[] arrDurataActivitate = {"1 ora","1:30 ora","2 ore"};
 
+    Button btnCreeareOrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,16 @@ public class CreeareOrar extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        btnCreeareOrar =findViewById(R.id.btnCreeareOrar);
+        btnCreeareOrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreeareOrar.this, adaugareMaterie.class);
+                startActivity(intent);
+            }
+        });
+
 
         spnAnFac = findViewById(R.id.spnAnFac);
         spnStartOrar = findViewById(R.id.spnStartOrar);
