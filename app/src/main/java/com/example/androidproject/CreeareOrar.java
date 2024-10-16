@@ -13,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class CreeareOrar extends AppCompatActivity {
 
     Spinner spnAnFac;
@@ -26,6 +28,8 @@ public class CreeareOrar extends AppCompatActivity {
     String[] arrDurataActivitate = {"1 ora","1:30 ora","2 ore"};
 
     Button btnCreeareOrar;
+    Button btnAnulare;
+    FloatingActionButton fabBackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +42,31 @@ public class CreeareOrar extends AppCompatActivity {
             return insets;
         });
 
+        // ========= Butoane ==========
+
         btnCreeareOrar =findViewById(R.id.btnCreeareOrar);
         btnCreeareOrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreeareOrar.this, adaugareMaterie.class);
+                Intent intent = new Intent(CreeareOrar.this, PaginaMaterii.class);
+                startActivity(intent);
+            }
+        });
+
+        btnAnulare = findViewById(R.id.btnAnulare);
+        btnAnulare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreeareOrar.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        fabBackBtn = findViewById(R.id.fabBackBtn);
+        fabBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreeareOrar.this, MainActivity.class);
                 startActivity(intent);
             }
         });

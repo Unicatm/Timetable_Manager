@@ -11,9 +11,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class adaugareMaterie extends AppCompatActivity {
 
     Button btnAdaugaMaterie;
+    FloatingActionButton fabBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,19 @@ public class adaugareMaterie extends AppCompatActivity {
             return insets;
         });
 
+        // ======== Butoane =========
 
         btnAdaugaMaterie =findViewById(R.id.btnAdaugaMaterie);
         btnAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(adaugareMaterie.this, PaginaMaterii.class);
+                startActivity(intent);
+            }
+        });
+
+        fabBackButton =findViewById(R.id.fabBackBtn);
+        fabBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(adaugareMaterie.this, PaginaMaterii.class);

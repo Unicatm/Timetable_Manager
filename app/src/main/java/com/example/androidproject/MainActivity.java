@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // ========= Butoane ==========
+
         btnCreeareOrar =findViewById(R.id.btnStart);
         btnCreeareOrar.setOnClickListener(new View.OnClickListener() {
             @Override

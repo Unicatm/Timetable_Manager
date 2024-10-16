@@ -1,6 +1,9 @@
 package com.example.androidproject;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,8 +11,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class PaginaMaterii extends AppCompatActivity {
 
+    FloatingActionButton fabAdaugaMaterie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +26,17 @@ public class PaginaMaterii extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // ========= Butoane ==========
+
+        fabAdaugaMaterie = findViewById(R.id.fabAdaugaMaterie);
+        fabAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PaginaMaterii.this, adaugareMaterie.class);
+                startActivity(intent);
+            }
+        });
     }
+
 }
