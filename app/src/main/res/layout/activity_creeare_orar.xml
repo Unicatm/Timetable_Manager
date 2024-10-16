@@ -18,26 +18,39 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="42dp">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabBackBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="mini"
+            app:elevation="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="?attr/homeAsUpIndicator"
+            />
+
         <TextView
             android:id="@+id/tvTitluPg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
             android:text="Creează orarul"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fabBackBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/grInputFac"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvTitluPg"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitluPg">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fabBackBtn">
 
             <TextView
                 android:id="@+id/tvNumeFac"
@@ -57,41 +70,67 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/grInputAn"
-            android:layout_width="0dp"
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/grInputFac"
-            app:layout_constraintTop_toBottomOf="@+id/grInputFac">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintTop_toBottomOf="@+id/grInputFac"
+            tools:layout_editor_absoluteX="16dp">
 
-            <TextView
-                android:id="@+id/tvAnFac"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="An"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spnAnFac"
+            <LinearLayout
+                android:id="@+id/grInputAn"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="left" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tvAnFac"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="An"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spnAnFac"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="left" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvSemestru"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Semestru"
+                    android:textStyle="bold"/>
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/grInputOraStart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/grInputAn"
-            app:layout_constraintTop_toBottomOf="@+id/grInputAn">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
             <TextView
                 android:id="@+id/tvOraStart"
@@ -151,7 +190,7 @@
                 android:id="@+id/tvDurataActivitati"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Durată"
+                android:text="Durată activitate"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
