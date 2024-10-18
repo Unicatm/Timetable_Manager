@@ -1,5 +1,6 @@
 package com.example.androidproject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class AdaugareMaterie extends AppCompatActivity {
 
     Button btnAdaugaMaterie;
-    FloatingActionButton fabBackButton;
+    FloatingActionButton fabBackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +30,8 @@ public class AdaugareMaterie extends AppCompatActivity {
             return insets;
         });
 
-        // ======== Butoane =========
-
-        btnAdaugaMaterie =findViewById(R.id.btnAdaugaMaterie);
+        // ========= Butoane ==========
+        btnAdaugaMaterie = findViewById(R.id.btnAdaugaMaterie);
         btnAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,13 +40,14 @@ public class AdaugareMaterie extends AppCompatActivity {
             }
         });
 
-        fabBackButton =findViewById(R.id.fabBackBtn);
-        fabBackButton.setOnClickListener(new View.OnClickListener() {
+        fabBackBtn = findViewById(R.id.fabBackBtn);
+        fabBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AdaugareMaterie.this, PaginaMaterii.class);
                 startActivity(intent);
             }
         });
+
     }
 }
