@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class adaugareMaterie extends AppCompatActivity {
+public class AdaugareMaterie extends AppCompatActivity {
 
     Button btnAdaugaMaterie;
     FloatingActionButton fabBackButton;
@@ -35,7 +35,7 @@ public class adaugareMaterie extends AppCompatActivity {
         btnAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(adaugareMaterie.this, PaginaMaterii.class);
+                Intent intent = new Intent(AdaugareMaterie.this, PaginaMaterii.class);
                 startActivity(intent);
             }
         });
@@ -44,7 +44,7 @@ public class adaugareMaterie extends AppCompatActivity {
         fabBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(adaugareMaterie.this, PaginaMaterii.class);
+                Intent intent = new Intent(AdaugareMaterie.this, PaginaMaterii.class);
                 startActivity(intent);
             }
         });
