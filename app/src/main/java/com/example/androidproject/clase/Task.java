@@ -6,11 +6,13 @@ public class Task {
     private String numeTask;
     private Date dataDeadline;
     private String descriere;
+    private Categorie categorie;
 
-    public Task(String numeTask, Date dataDeadline, String descriere) {
+    public Task(String numeTask, Date dataDeadline, String descriere, Categorie categorie) {
         this.numeTask = numeTask;
         this.dataDeadline = dataDeadline;
         this.descriere = descriere;
+        this.categorie = categorie;
     }
 
     public String getNumeTask() {
@@ -35,5 +37,13 @@ public class Task {
 
     public void setDescriere(String descriere) {
         this.descriere = descriere;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
     }
 }
