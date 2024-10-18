@@ -3,6 +3,7 @@
     <item
         android:id="@+id/pgMaterii"
         android:enabled="true"
+        android:name="com.example.healthok.ui.home.HomeFragment"
         android:icon="@drawable/materii_icon"
         android:title="Materii"/>
     <item
