@@ -50,6 +50,7 @@ public class PaginaMaterii extends AppCompatActivity {
 
         BottomNavigationView btmNav = findViewById(R.id.btmNav);
 
+        // UITA-TE AICI PT PROBLEMA DE LA TASKS CU AFISAREA!!!!!
         btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

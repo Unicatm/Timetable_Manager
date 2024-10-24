@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Categorie;
+import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -29,7 +30,7 @@ public class AdaugareTask extends AppCompatActivity {
 
     FloatingActionButton fabBackBtn;
     Button btnAdaugaTask;
-    List<String> listaDenMaterii = new ArrayList<>();
+    List<String> listaDenMaterii = MateriiManager.getMateriiList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class AdaugareTask extends AppCompatActivity {
         Spinner spnTip = findViewById(R.id.spnTip);
         EditText etDescriere = findViewById(R.id.etDescriere);
 
+        ArrayAdapter<String> adapterDenMaterie = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listaDenMaterii);
+        spnMaterie.setAdapter(adapterDenMaterie);
 
         btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
         btnAdaugaTask.setOnClickListener(view->{

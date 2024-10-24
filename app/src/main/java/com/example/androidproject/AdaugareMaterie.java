@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
+import com.example.androidproject.clase.MateriiManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AdaugareMaterie extends AppCompatActivity {
@@ -61,6 +62,9 @@ public class AdaugareMaterie extends AppCompatActivity {
                 Boolean isWeekly = ckbFrecventa.isChecked() ? true:false;
 
                 Materie materie = new Materie(denMaterie,nrSala,isWeekly);
+
+                //Am adaugat denumirea materiei in lista din MateriiManager
+                MateriiManager.adaugaMaterie(denMaterie);
 
                 Intent intent = getIntent();
                 intent.putExtra("materieFromIntent",materie);
