@@ -1,18 +1,22 @@
 package com.example.androidproject.clase;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
     private String numeTask;
+    private String denMaterie;
     private Date dataDeadline;
+    private Categorie tipDdl;
     private String descriere;
-    private Categorie categorie;
 
-    public Task(String numeTask, Date dataDeadline, String descriere, Categorie categorie) {
+
+    public Task(String numeTask, String denMaterie, Date dataDeadline, Categorie tipDdl, String descriere) {
         this.numeTask = numeTask;
+        this.denMaterie = denMaterie;
         this.dataDeadline = dataDeadline;
+        this.tipDdl = tipDdl;
         this.descriere = descriere;
-        this.categorie = categorie;
     }
 
     public String getNumeTask() {
@@ -23,6 +27,14 @@ public class Task {
         this.numeTask = numeTask;
     }
 
+    public String getDenMaterie() {
+        return denMaterie;
+    }
+
+    public void setDenMaterie(String denMaterie) {
+        this.denMaterie = denMaterie;
+    }
+
     public Date getDataDeadline() {
         return dataDeadline;
     }
@@ -31,19 +43,19 @@ public class Task {
         this.dataDeadline = dataDeadline;
     }
 
+    public Categorie getTipDdl() {
+        return tipDdl;
+    }
+
+    public void setTipDdl(Categorie tipDdl) {
+        this.tipDdl = tipDdl;
+    }
+
     public String getDescriere() {
         return descriere;
     }
 
     public void setDescriere(String descriere) {
         this.descriere = descriere;
-    }
-
-    public Categorie getCategorie() {
-        return categorie;
-    }
-
-    public void setCategorie(Categorie categorie) {
-        this.categorie = categorie;
     }
 }

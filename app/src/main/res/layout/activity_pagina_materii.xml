@@ -8,7 +8,7 @@
     tools:context=".PaginaMaterii">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="607dp"
         android:paddingLeft="16dp"
         android:paddingTop="16dp"
@@ -26,34 +26,6 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="377dp"
-            android:layout_height="109dp"
-            android:layout_marginTop="36dp"
-            android:background="@color/material_dynamic_neutral95"
-            android:padding="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitluPg">
-
-            <TextView
-                android:id="@+id/tvTitluMaterie"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SDD"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvMaterieAnunt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 task-uri"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/tvTitluPg"
@@ -76,6 +48,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFacultateAn"
             app:srcCompat="@android:drawable/ic_input_add" />
+
+        <ListView
+            android:id="@+id/lvListaMaterii"
+            android:layout_width="409dp"
+            android:layout_height="499dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fabAdaugaMaterie" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
