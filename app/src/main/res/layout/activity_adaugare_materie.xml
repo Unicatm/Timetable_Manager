@@ -37,6 +37,7 @@
                 android:layout_height="50dp"
                 android:ems="10"
                 android:hint="BTI"
+                android:text="BTI"
                 android:inputType="text" />
         </LinearLayout>
 
@@ -63,6 +64,7 @@
                 android:layout_height="50dp"
                 android:ems="10"
                 android:hint="2102"
+                android:text="2102"
                 android:inputType="text" />
 
         </LinearLayout>

@@ -33,6 +33,7 @@ public class PaginaMaterii extends AppCompatActivity {
     private FloatingActionButton fabAdaugaMaterie;
     private List<Materie> listaMaterii= new ArrayList<>();
     private ListView lvListaBilete;
+    private ArrayAdapter<Materie> adapter;
     private ActivityResultLauncher<Intent> launcher;
 
     @Override
@@ -46,11 +47,12 @@ public class PaginaMaterii extends AppCompatActivity {
             return insets;
         });
 
-        // ========= Navigation ==========
+        lvListaBilete = findViewById(R.id.lvListaMaterii);
+        adapter =new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,listaMaterii);
+        lvListaBilete.setAdapter(adapter);
 
-        BottomNavigationView btmNav = findViewById(R.id.btmNav);
-
-        // UITA-TE AICI PT PROBLEMA DE LA TASKS CU AFISAREA!!!!!
+        // ========= NAVIGATION ==========
+        BottomNavigationView btmNav = findViewById(id.btmNav);
         btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -59,15 +61,23 @@ public class PaginaMaterii extends AppCompatActivity {
 
                 if(id ==R.id.pgMaterii){
                     intent = new Intent(PaginaMaterii.this, PaginaMaterii.class);
-                    startActivity(intent);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    launcher.launch(intent);
                     return true;
                 } else if (id == R.id.pgOrar) {
+                    intent = new Intent(PaginaMaterii.this, PaginaOrar.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    launcher.launch(intent);
                     return true;
                 } else if (id == R.id.pgAnunturi) {
                     intent = new Intent(PaginaMaterii.this, PaginaTasks.class);
-                    startActivity(intent);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    launcher.launch(intent);
                     return true;
                 }else if (id == R.id.pgNotite) {
+                    intent = new Intent(PaginaMaterii.this, PaginaNotite.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    launcher.launch(intent);
                     return true;
                 }
 
@@ -76,15 +86,14 @@ public class PaginaMaterii extends AppCompatActivity {
         });
 
 
-        lvListaBilete = findViewById(R.id.lvListaMaterii);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
             if(result.getResultCode()==RESULT_OK){
                 Intent intent = result.getData();
                 Materie materie = (Materie) intent.getSerializableExtra("materieFromIntent");
                 if(materie!=null){
                     listaMaterii.add(materie);
-                    ArrayAdapter<Materie> adapter =new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,listaMaterii);
-                    lvListaBilete.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 

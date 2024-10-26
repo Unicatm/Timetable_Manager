@@ -2,6 +2,7 @@ package com.example.androidproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,11 +27,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AdaugareTask extends AppCompatActivity {
+public class AdaugareTask extends AppCompatActivity  {
 
     FloatingActionButton fabBackBtn;
     Button btnAdaugaTask;
     List<String> listaDenMaterii = MateriiManager.getMateriiList();
+    List<String> categoriiList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +48,7 @@ public class AdaugareTask extends AppCompatActivity {
         // ========= Butoane ==========
 
         fabBackBtn = findViewById(R.id.fabBackBtn);
-        fabBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdaugareTask.this, PaginaTasks.class);
-                startActivity(intent);
-            }
-        });
+        fabBackBtn.setOnClickListener(v -> finish());
 
 
         EditText etDenMaterie = findViewById(R.id.etDenMaterie);
@@ -63,6 +59,14 @@ public class AdaugareTask extends AppCompatActivity {
 
         ArrayAdapter<String> adapterDenMaterie = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listaDenMaterii);
         spnMaterie.setAdapter(adapterDenMaterie);
+
+        categoriiList = new ArrayList<>();
+        for (Categorie categ : Categorie.values()) {
+            categoriiList.add(categ.name());
+        }
+
+        ArrayAdapter<String> adapterCateg = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriiList);
+        spnTip.setAdapter(adapterCateg);
 
         btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
         btnAdaugaTask.setOnClickListener(view->{
@@ -84,6 +88,7 @@ public class AdaugareTask extends AppCompatActivity {
                 Intent intent = getIntent();
                 intent.putExtra("taskFromIntent", task);
                 setResult(RESULT_OK, intent);
+                Log.d("AdaugareTask", "Task creat și trimis: " + task);
                 finish();
                 //startActivity(intent);
         });
