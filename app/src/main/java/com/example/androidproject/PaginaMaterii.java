@@ -32,7 +32,7 @@ public class PaginaMaterii extends AppCompatActivity {
     //BottomNavigationView btmNav = findViewById(R.id.btmNav);
     private FloatingActionButton fabAdaugaMaterie;
     private List<Materie> listaMaterii= new ArrayList<>();
-    private ListView lvListaBilete;
+    private ListView lvListaMaterii;
     private ArrayAdapter<Materie> adapter;
     private ActivityResultLauncher<Intent> launcher;
 
@@ -47,9 +47,10 @@ public class PaginaMaterii extends AppCompatActivity {
             return insets;
         });
 
-        lvListaBilete = findViewById(R.id.lvListaMaterii);
+        lvListaMaterii = findViewById(R.id.lvListaMaterii);
         adapter =new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,listaMaterii);
-        lvListaBilete.setAdapter(adapter);
+        lvListaMaterii.setAdapter(adapter);
+
 
         // ========= NAVIGATION ==========
         BottomNavigationView btmNav = findViewById(id.btmNav);
@@ -90,11 +91,12 @@ public class PaginaMaterii extends AppCompatActivity {
             if(result.getResultCode()==RESULT_OK){
                 Intent intent = result.getData();
                 Materie materie = (Materie) intent.getSerializableExtra("materieFromIntent");
+
                 if(materie!=null){
                     listaMaterii.add(materie);
                     adapter.notifyDataSetChanged();
-                    Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
                 }
+                Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
             }
 
 

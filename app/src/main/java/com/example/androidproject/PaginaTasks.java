@@ -89,10 +89,8 @@ public class PaginaTasks extends AppCompatActivity {
                if (task!=null){
                    listaTasks.add(task);
                    adapter.notifyDataSetChanged();
-                   Log.d("PaginaTasks", "Task adăugat: " + task);
                    //Toast.makeText(this, task.toString(), Toast.LENGTH_SHORT).show();
                }else{
-                   Log.d("PaginaTasks", "Task-ul este null");
                }
                //Toast.makeText(this,task.toString(),Toast.LENGTH_SHORT).show();
 

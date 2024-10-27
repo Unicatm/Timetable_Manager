@@ -88,7 +88,6 @@ public class AdaugareTask extends AppCompatActivity  {
                 Intent intent = getIntent();
                 intent.putExtra("taskFromIntent", task);
                 setResult(RESULT_OK, intent);
-                Log.d("AdaugareTask", "Task creat și trimis: " + task);
                 finish();
                 //startActivity(intent);
         });

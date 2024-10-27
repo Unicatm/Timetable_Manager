@@ -58,4 +58,15 @@ public class Task implements Serializable {
     public void setDescriere(String descriere) {
         this.descriere = descriere;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "numeTask='" + numeTask + '\'' +
+                ", denMaterie='" + denMaterie + '\'' +
+                ", dataDeadline=" + dataDeadline +
+                ", tipDdl=" + tipDdl +
+                ", descriere='" + descriere + '\'' +
+                '}';
+    }
 }

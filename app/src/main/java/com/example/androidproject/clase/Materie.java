@@ -36,4 +36,13 @@ public class Materie implements Serializable {
     public void setSaptamanal(Boolean saptamanal) {
         this.saptamanal = saptamanal;
     }
+
+    @Override
+    public String toString() {
+        return "Materie{" +
+                "numeMaterie='" + numeMaterie + '\'' +
+                ", sala='" + sala + '\'' +
+                ", saptamanal=" + saptamanal +
+                '}';
+    }
 }
