@@ -26,7 +26,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvDenMaterie" />
 
         <TextView
             android:id="@+id/tvDenMaterie"
@@ -34,14 +34,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="5dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
             android:background="@color/lightPurple"
             android:text="Materie"
             android:textColor="@color/darkPurple"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/tvDenTask"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -55,7 +53,8 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/tvDeadline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDenTask" />
+            app:layout_constraintTop_toBottomOf="@+id/tvDenTask"
+            app:layout_constraintVertical_bias="1.0" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabSetariTask"
@@ -76,7 +75,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="10dp"
             android:text="12.02.2025"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -86,7 +85,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
             android:text="2 days"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/blackDot" />
 
