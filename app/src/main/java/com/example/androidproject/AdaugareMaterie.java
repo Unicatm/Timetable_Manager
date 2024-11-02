@@ -94,7 +94,7 @@ public class AdaugareMaterie extends AppCompatActivity {
 
 
                 //Am adaugat denumirea materiei in lista din MateriiManager
-                MateriiManager.adaugaMaterie(denMaterie);
+                MateriiManager.adaugaMaterie(materie);
 
                 Intent intent = getIntent();
                 intent.putExtra("materieFromIntent",materie);

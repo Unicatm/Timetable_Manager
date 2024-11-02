@@ -3,19 +3,29 @@ package com.example.androidproject.clase;
 import java.util.ArrayList;
 
 public class MateriiManager {
-    private static ArrayList<String> numeMateriiList = new ArrayList<>();
+    private static ArrayList<Materie> materiiList = new ArrayList<>();
 
-    public static void adaugaMaterie(String materie) {
-        numeMateriiList.add(materie);
+    public static void adaugaMaterie(Materie materie) {
+        materiiList.add(materie);
     }
 
     // Șterge materie
-    public static void stergeMaterie(String materie) {
-        numeMateriiList.remove(materie);
+    public static void stergeMaterie(Materie materie) {
+        materiiList.remove(materie);
     }
 
     // Returnează lista materiilor
-    public static ArrayList<String> getMateriiList() {
-        return numeMateriiList;
+    public static ArrayList<String> getNumeMateriiList() {
+        ArrayList<String> listaNumeMaterii = new ArrayList<>();
+        for(Materie m:materiiList){
+            listaNumeMaterii.add(m.getNumeMaterie());
+        }
+        return listaNumeMaterii;
     }
+
+    public static ArrayList<Materie> getMateriiList() {
+        return materiiList;
+    }
+
+
 }

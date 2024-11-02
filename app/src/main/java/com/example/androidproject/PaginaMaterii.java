@@ -97,7 +97,7 @@ public class PaginaMaterii extends AppCompatActivity {
                     listaMaterii.add(materie);
                     adapter.notifyDataSetChanged();
                 }
-                Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
             }
 
 
