@@ -19,6 +19,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Task;
+import com.example.androidproject.clase.TaskManager;
+import com.example.androidproject.customAdapters.AdapterTask;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -30,8 +32,9 @@ public class PaginaTasks extends AppCompatActivity {
     private FloatingActionButton fabAdaugaTask;
     private ListView lvListaTasks;
     private List<Task> listaTasks = new ArrayList<>();
+    //private TaskManager listaTasks = new TaskManager();
     private ActivityResultLauncher<Intent> launcher;
-    private ArrayAdapter<Task> adapter;
+    private AdapterTask adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,7 @@ public class PaginaTasks extends AppCompatActivity {
         });
 
         lvListaTasks = findViewById(R.id.lvListaTasks);
-        adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaTasks);
+        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaTasks,getLayoutInflater());
         lvListaTasks.setAdapter(adapter);
 
         // ========= NAVIGATION ==========

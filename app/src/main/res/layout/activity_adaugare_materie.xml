@@ -111,5 +111,29 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="?attr/homeAsUpIndicator"/>
 
+        <RadioGroup
+            android:id="@+id/rgFrecventa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ckbFrecventa">
+
+            <RadioButton
+                android:id="@+id/rbSaptamanaPara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Săptămână pară"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/rbSaptamanaImpara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Săptămână impară" />
+        </RadioGroup>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

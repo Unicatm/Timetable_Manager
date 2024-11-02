@@ -49,7 +49,12 @@ public class AdapterMaterie extends ArrayAdapter<Materie> {
         if (materie.getSaptamanal()) {
             tvPerioada.setText("Weekly");
         } else {
-            tvPerioada.setText("Once a week");
+
+            if(materie.getTipSaptamana().compareTo("para")==0){
+                tvPerioada.setText("Saptamana para");
+            }else{
+                tvPerioada.setText("Saptamana impara");
+            }
         }
         //MAI E DE ADAUGAT NR DE ASSINGMENTS TOTAL
 

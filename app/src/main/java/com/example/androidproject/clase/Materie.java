@@ -6,11 +6,20 @@ public class Materie implements Serializable {
     private String numeMaterie;
     private String sala;
     private Boolean saptamanal;
+    private String tipSaptamana;
+    private int noAssignments;
 
     public Materie(String numeMaterie, String sala, Boolean saptamanal) {
         this.numeMaterie = numeMaterie;
         this.sala = sala;
         this.saptamanal = saptamanal;
+    }
+
+    public Materie(String numeMaterie, String sala, Boolean saptamanal, String tipSaptamana) {
+        this.numeMaterie = numeMaterie;
+        this.sala = sala;
+        this.saptamanal = saptamanal;
+        this.tipSaptamana = tipSaptamana;
     }
 
     public String getNumeMaterie() {
@@ -37,12 +46,21 @@ public class Materie implements Serializable {
         this.saptamanal = saptamanal;
     }
 
+    public String getTipSaptamana() {
+        return tipSaptamana;
+    }
+
+    public void setTipSaptamana(String tipSaptamana) {
+        this.tipSaptamana = tipSaptamana;
+    }
+
     @Override
     public String toString() {
         return "Materie{" +
                 "numeMaterie='" + numeMaterie + '\'' +
                 ", sala='" + sala + '\'' +
                 ", saptamanal=" + saptamanal +
+                ", tipSaptamana='" + tipSaptamana + '\'' +
                 '}';
     }
 }

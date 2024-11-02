@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,7 @@ public class AdaugareMaterie extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
             return insets;
         });
 
@@ -52,6 +55,18 @@ public class AdaugareMaterie extends AppCompatActivity {
         EditText etDenMaterie = findViewById(R.id.etDenMaterie);
         EditText etSala = findViewById(R.id.etSala);
         CheckBox ckbFrecventa = findViewById(R.id.ckbFrecventa);
+        RadioGroup rgFrecventa = findViewById(R.id.rgFrecventa);
+        RadioButton rbSaptamanaPara = findViewById(R.id.rbSaptamanaPara);
+        RadioButton rbSaptamanaImpara = findViewById(R.id.rbSaptamanaImpara);
+
+        ckbFrecventa.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(ckbFrecventa.isChecked()){
+                rgFrecventa.setVisibility(View.VISIBLE);
+            }else{
+                rgFrecventa.setVisibility(View.GONE);
+            }
+        });
+
 
         btnAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +74,24 @@ public class AdaugareMaterie extends AppCompatActivity {
 
                 String denMaterie = String.valueOf(etDenMaterie.getText());
                 String nrSala = String.valueOf(etSala.getText());
-                Boolean isWeekly = ckbFrecventa.isChecked() ? true:false;
+                Boolean isWeekly = !ckbFrecventa.isChecked();
 
-                Materie materie = new Materie(denMaterie,nrSala,isWeekly);
+                int checkedId = rgFrecventa.getCheckedRadioButtonId();
+                String tipSaptamana="";
+                Materie materie;
+
+                if(ckbFrecventa.isChecked()){
+                    if (checkedId == rbSaptamanaPara.getId()) {
+                        tipSaptamana = "para";
+                    } else if (checkedId == rbSaptamanaImpara.getId()) {
+                        tipSaptamana = "impara";
+                    }
+
+                    materie = new Materie(denMaterie,nrSala, isWeekly, tipSaptamana);
+                }else{
+                    materie = new Materie(denMaterie, nrSala, isWeekly);
+                }
+
 
                 //Am adaugat denumirea materiei in lista din MateriiManager
                 MateriiManager.adaugaMaterie(denMaterie);
