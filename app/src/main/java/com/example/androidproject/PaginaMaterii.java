@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
+import com.example.androidproject.customAdapters.AdapterMaterie;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -33,7 +34,7 @@ public class PaginaMaterii extends AppCompatActivity {
     private FloatingActionButton fabAdaugaMaterie;
     private List<Materie> listaMaterii= new ArrayList<>();
     private ListView lvListaMaterii;
-    private ArrayAdapter<Materie> adapter;
+    private AdapterMaterie adapter;
     private ActivityResultLauncher<Intent> launcher;
 
     @Override
@@ -48,7 +49,7 @@ public class PaginaMaterii extends AppCompatActivity {
         });
 
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
-        adapter =new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,listaMaterii);
+        adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaMaterii, getLayoutInflater());
         lvListaMaterii.setAdapter(adapter);
 
 
