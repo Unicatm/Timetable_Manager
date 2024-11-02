@@ -6,6 +6,11 @@ public class MateriiManager {
     private static ArrayList<Materie> materiiList = new ArrayList<>();
 
     public static void adaugaMaterie(Materie materie) {
+//        for (Materie m : materiiList) {
+//            if (m.getNumeMaterie().equals(materie.getNumeMaterie())) {
+//                return;
+//            }
+//        }
         materiiList.add(materie);
     }
 
@@ -24,7 +29,17 @@ public class MateriiManager {
     }
 
     public static ArrayList<Materie> getMateriiList() {
+        for (Materie m : materiiList) {
+            m.updateTaskCount();
+        }
         return materiiList;
+    }
+
+    public static void updateSubjectCounts() {
+        for (Materie m : materiiList) {
+            int count = TaskManager.getTaskCountForSubject(m.getNumeMaterie());
+            m.setNoAssignments(count);
+        }
     }
 
 

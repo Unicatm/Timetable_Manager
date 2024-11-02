@@ -54,6 +54,14 @@ public class Materie implements Serializable {
         this.tipSaptamana = tipSaptamana;
     }
 
+    public int getNoAssignments() {
+        return noAssignments;
+    }
+
+    public void setNoAssignments(int noAssignments) {
+        this.noAssignments = noAssignments;
+    }
+
     @Override
     public String toString() {
         return "Materie{" +
@@ -62,5 +70,9 @@ public class Materie implements Serializable {
                 ", saptamanal=" + saptamanal +
                 ", tipSaptamana='" + tipSaptamana + '\'' +
                 '}';
+    }
+
+    public void updateTaskCount() {
+        this.noAssignments = TaskManager.getTaskCountForSubject(numeMaterie);
     }
 }

@@ -57,6 +57,7 @@ public class AdapterMaterie extends ArrayAdapter<Materie> {
             }
         }
         //MAI E DE ADAUGAT NR DE ASSINGMENTS TOTAL
+        tvNoAssingments.setText(materie.getNoAssignments()+" tasks");
 
         return view;
     }

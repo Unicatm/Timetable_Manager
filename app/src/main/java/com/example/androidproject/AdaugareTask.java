@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.androidproject.clase.Categorie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
+import com.example.androidproject.clase.TaskManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
@@ -80,7 +81,6 @@ public class AdaugareTask extends AppCompatActivity  {
                 String descriere = String.valueOf(etDescriere.getText());
 
                 Task task = new Task(denTask,materie,deadline,tipDdl,descriere);
-
 
                 Intent intent = getIntent();
                 intent.putExtra("taskFromIntent", task);

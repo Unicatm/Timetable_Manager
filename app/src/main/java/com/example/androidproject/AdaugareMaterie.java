@@ -24,7 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class AdaugareMaterie extends AppCompatActivity {
 
     private Button btnAdaugaMaterie;
-     private FloatingActionButton fabBackBtn;
+    private FloatingActionButton fabBackBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,7 @@ public class AdaugareMaterie extends AppCompatActivity {
 
 
                 //Am adaugat denumirea materiei in lista din MateriiManager
-                MateriiManager.adaugaMaterie(materie);
+                //MateriiManager.adaugaMaterie(materie);
 
                 Intent intent = getIntent();
                 intent.putExtra("materieFromIntent",materie);
