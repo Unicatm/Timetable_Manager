@@ -37,7 +37,7 @@
                 android:layout_height="50dp"
                 android:ems="10"
                 android:hint="Deadline"
-                android:text="12.01.2022"
+                android:text="19.11.2024"
                 android:inputType="text" />
         </LinearLayout>
 
