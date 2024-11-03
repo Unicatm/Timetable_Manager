@@ -23,10 +23,14 @@ import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.customAdapters.AdapterMaterie;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PaginaMaterii extends AppCompatActivity {
@@ -34,6 +38,7 @@ public class PaginaMaterii extends AppCompatActivity {
     //BottomNavigationView btmNav = findViewById(R.id.btmNav);
     private FloatingActionButton fabAdaugaMaterie;
     private List<Materie> listaMaterii= MateriiManager.getMateriiList();
+    private List<Materie> originalMateriiList;
     private ListView lvListaMaterii;
     private AdapterMaterie adapter;
     private ActivityResultLauncher<Intent> launcher;
@@ -52,6 +57,11 @@ public class PaginaMaterii extends AppCompatActivity {
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
         adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaMaterii, getLayoutInflater());
         lvListaMaterii.setAdapter(adapter);
+
+        ChipGroup chipGroup = findViewById(R.id.cgSortare);
+        Chip chipAZ = findViewById(R.id.chipAZ);
+        Chip chipZA = findViewById(R.id.chipZA);
+        Chip chipNoAssignments = findViewById(R.id.chipAssignments);
 
 
         // ========= NAVIGATION ==========
@@ -90,18 +100,16 @@ public class PaginaMaterii extends AppCompatActivity {
 
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
-            if(result.getResultCode()==RESULT_OK){
+            if(result.getResultCode()==RESULT_OK) {
                 Intent intent = result.getData();
                 Materie materie = (Materie) intent.getSerializableExtra("materieFromIntent");
 
-                if(materie!=null){
+                if (materie != null) {
                     listaMaterii.add(materie);
                     adapter.notifyDataSetChanged();
                 }
                 //Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
             }
-
-
         });
 
 
@@ -114,6 +122,33 @@ public class PaginaMaterii extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), AdaugareMaterie.class);
                 //startActivity(intent);
                 launcher.launch(intent);
+            }
+        });
+
+
+        chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty()) {
+/*                listaMaterii.clear();
+                listaMaterii.addAll(originalMateriiList);*/
+                return;
+            };
+
+            int checkedId = checkedIds.get(0);
+
+            if (checkedId == R.id.chipAZ) {
+                // Sortare alfabetică A-Z
+                Collections.sort(listaMaterii, Comparator.comparing(Materie::getNumeMaterie));
+                adapter.notifyDataSetChanged();
+
+            } else if (checkedId == R.id.chipZA) {
+                // Sortare alfabetică Z-A
+                Collections.sort(listaMaterii, (m1, m2) -> m2.getNumeMaterie().compareTo(m1.getNumeMaterie()));
+                adapter.notifyDataSetChanged();
+
+            } else if (checkedId == R.id.chipAssignments) {
+/*                        materiiList.clear();
+                        materiiList.addAll(originalMateriiList);
+                        subjectAdapter.notifyDataSetChanged();*/
             }
         });
     }
