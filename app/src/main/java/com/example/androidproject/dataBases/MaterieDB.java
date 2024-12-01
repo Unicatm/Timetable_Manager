@@ -13,7 +13,7 @@ public abstract class MaterieDB extends RoomDatabase {
     private static final String dbName = "materii.db";
     private static MaterieDB instance;
 
-    public static MaterieDB getInstance(Context context) {
+    public static synchronized MaterieDB getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context, MaterieDB.class, dbName)
                     .allowMainThreadQueries()

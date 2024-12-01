@@ -5,11 +5,17 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 import com.example.androidproject.clase.Task;
 
+import java.util.Date;
+
+@TypeConverters({Converters.class})
 @Database(entities = {Task.class},version = 1,exportSchema = false)
 public abstract class TasksDB extends RoomDatabase {
+
     private static final String dbName = "tasks.db";
     private static TasksDB instance;
 

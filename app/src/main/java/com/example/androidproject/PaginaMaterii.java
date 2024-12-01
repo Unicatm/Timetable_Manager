@@ -62,7 +62,7 @@ public class PaginaMaterii extends AppCompatActivity {
         listaDBMaterii=materiiDAO.getMaterii();
 
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
-        adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaMaterii, getLayoutInflater());
+        adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaDBMaterii, getLayoutInflater());
         lvListaMaterii.setAdapter(adapter);
 
         ChipGroup chipGroup = findViewById(R.id.cgSortare);
@@ -112,7 +112,12 @@ public class PaginaMaterii extends AppCompatActivity {
                 Materie materie = (Materie) intent.getSerializableExtra("materieFromIntent");
 
                 if (materie != null) {
-                    listaMaterii.add(materie);
+//                    listaMaterii.add(materie);
+//                    adapter.notifyDataSetChanged();
+
+                    materiiDAO.insertMaterie(materie);
+                    listaDBMaterii.clear();
+                    listaDBMaterii.addAll(materiiDAO.getMaterii());
                     adapter.notifyDataSetChanged();
                 }
             }
