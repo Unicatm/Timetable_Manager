@@ -10,6 +10,7 @@ import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class AdaugareMaterie extends AppCompatActivity {
 
     private Button btnAdaugaMaterie;
     private FloatingActionButton fabBackBtn;
+    private boolean isEditing=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class AdaugareMaterie extends AppCompatActivity {
         });
 
         // ========= COMPONENTE VIZUALE =========
+        TextView tvTitlu = findViewById(R.id.tvTitlu);
+
         EditText etDenMaterie = findViewById(R.id.etDenMaterie);
         EditText etSala = findViewById(R.id.etSala);
         CheckBox ckbFrecventa = findViewById(R.id.ckbFrecventa);
@@ -66,6 +70,39 @@ public class AdaugareMaterie extends AppCompatActivity {
                 rgFrecventa.setVisibility(View.GONE);
             }
         });
+
+        Intent editIntent = getIntent();
+
+        if(editIntent.hasExtra("editMaterie")){
+            isEditing = true;
+            btnAdaugaMaterie.setText("Salveaza modificarile");
+            tvTitlu.setText("Editeaza materia");
+
+            Materie materieApasata = (Materie) editIntent.getSerializableExtra("editMaterie");
+
+            etDenMaterie.setText(materieApasata.getNumeMaterie());
+            etSala.setText(materieApasata.getSala());
+
+            if(!materieApasata.getSaptamanal()){
+                ckbFrecventa.setChecked(true);
+                rgFrecventa.setVisibility(View.VISIBLE);
+
+                switch (materieApasata.getTipSaptamana()){
+                    case "para": {
+                        rgFrecventa.check(R.id.rbSaptamanaPara);
+                        break;
+                    }
+                    case "impara": {
+                        rgFrecventa.check(R.id.rbSaptamanaImpara);
+                        break;
+                    }
+                }
+            }else if(materieApasata.getSaptamanal()){
+                ckbFrecventa.setChecked(false);
+                rgFrecventa.setVisibility(View.GONE);
+            }
+
+        }
 
 
         btnAdaugaMaterie.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +134,13 @@ public class AdaugareMaterie extends AppCompatActivity {
 //                MateriiManager.adaugaMaterie(materie);
 
                 Intent intent = getIntent();
-                intent.putExtra("materieFromIntent",materie);
+                if(isEditing){
+                    intent.putExtra("materieEditata", materie);
+                    isEditing = false;
+                }else{
+                    intent.putExtra("addMaterie",materie);
+                }
+
                 setResult(RESULT_OK,intent);
                 finish();
             }

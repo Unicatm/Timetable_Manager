@@ -18,4 +18,7 @@ public interface TasksDAO {
 
     @Query("SELECT * FROM tasks WHERE id=:idCautat")
     Task getTaskById(Long idCautat);
+
+    @Query("SELECT COUNT(*) FROM tasks WHERE denMaterie = :materie")
+    int getTaskCountForMaterie(String materie);
 }

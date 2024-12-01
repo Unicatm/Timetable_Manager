@@ -14,9 +14,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Categorie;
+import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.clase.TaskManager;
+import com.example.androidproject.dataBases.MaterieDAO;
+import com.example.androidproject.dataBases.MaterieDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
@@ -27,10 +30,14 @@ import java.util.List;
 
 public class AdaugareTask extends AppCompatActivity  {
 
-    FloatingActionButton fabBackBtn;
-    Button btnAdaugaTask;
-    List<String> listaDenMaterii = MateriiManager.getNumeMateriiList();
-    List<String> categoriiList;
+    private FloatingActionButton fabBackBtn;
+    private Button btnAdaugaTask;
+    private List<String> listaDenMaterii = MateriiManager.getNumeMateriiList();
+    private List<String> categoriiList;
+    private MaterieDB materieDB;
+    private MaterieDAO materieDAO;
+    private List<String> listaDenMateriiDB = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,10 @@ public class AdaugareTask extends AppCompatActivity  {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        materieDB = MaterieDB.getInstance(getApplicationContext());
+        materieDAO = materieDB.getMaterieDAO();
+
 
         // ========= Butoane ==========
 
@@ -55,7 +66,12 @@ public class AdaugareTask extends AppCompatActivity  {
         Spinner spnTip = findViewById(R.id.spnTip);
         EditText etDescriere = findViewById(R.id.etDescriere);
 
-        ArrayAdapter<String> adapterDenMaterie = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listaDenMaterii);
+        List<Materie> listaMateriiDB = materieDAO.getMaterii();
+        for (Materie materie : listaMateriiDB) {
+            listaDenMateriiDB.add(materie.getNumeMaterie());
+        }
+
+        ArrayAdapter<String> adapterDenMaterie = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listaDenMateriiDB);
         spnMaterie.setAdapter(adapterDenMaterie);
 
         categoriiList = new ArrayList<>();

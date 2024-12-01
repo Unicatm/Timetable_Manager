@@ -4,6 +4,7 @@ import static com.example.androidproject.R.*;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +25,8 @@ import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.customAdapters.AdapterMaterie;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
+import com.example.androidproject.dataBases.TasksDAO;
+import com.example.androidproject.dataBases.TasksDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -57,13 +60,15 @@ public class PaginaMaterii extends AppCompatActivity {
             return insets;
         });
 
+
+        TasksDB tasksDB = TasksDB.getInstance(getApplicationContext());
+        TasksDAO tasksDAO = tasksDB.getTaskDAO();
+
         materiiDb = MaterieDB.getInstance(getApplicationContext());
         materiiDAO = materiiDb.getMaterieDAO();
         listaDBMaterii=materiiDAO.getMaterii();
 
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
-        adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaDBMaterii, getLayoutInflater());
-        lvListaMaterii.setAdapter(adapter);
 
         ChipGroup chipGroup = findViewById(R.id.cgSortare);
         Chip chipAZ = findViewById(R.id.chipAZ);
@@ -108,21 +113,54 @@ public class PaginaMaterii extends AppCompatActivity {
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
             if(result.getResultCode()==RESULT_OK) {
-                Intent intent = result.getData();
-                Materie materie = (Materie) intent.getSerializableExtra("materieFromIntent");
+                if(result.getData().hasExtra("addMaterie")) {
+                    Intent intent = result.getData();
+                    Materie materie = (Materie) intent.getSerializableExtra("addMaterie");
 
-                if (materie != null) {
+                    if (materie != null) {
 //                    listaMaterii.add(materie);
 //                    adapter.notifyDataSetChanged();
 
-                    materiiDAO.insertMaterie(materie);
-                    listaDBMaterii.clear();
-                    listaDBMaterii.addAll(materiiDAO.getMaterii());
-                    adapter.notifyDataSetChanged();
+                        materiiDAO.insertMaterie(materie);
+                        listaDBMaterii.clear();
+                        listaDBMaterii.addAll(materiiDAO.getMaterii());
+
+
+                        for (Materie m : listaDBMaterii) {
+                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
+                            m.setNoAssignments(numarTaskuri);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }else if(result.getData().hasExtra("materieEditata")){
+                    Intent intent = result.getData();
+                    Materie materie = (Materie) intent.getSerializableExtra("materieEditata");
+
+
+                    if(materie!=null){
+                        Materie materieDeActualizat = (Materie) intent.getSerializableExtra("editMaterie");
+
+                        materieDeActualizat.setNumeMaterie(materie.getNumeMaterie());
+                        materieDeActualizat.setTipSaptamana(materie.getTipSaptamana());
+                        materieDeActualizat.setSala(materie.getSala());
+                        materieDeActualizat.setSaptamanal(materie.getSaptamanal());
+
+
+                        materiiDAO.updateMaterie(materieDeActualizat);
+
+                        materiiDAO.insertMaterie(materie);
+                        listaDBMaterii.clear();
+                        listaDBMaterii.addAll(materiiDAO.getMaterii());
+                        adapter.notifyDataSetChanged();
+
+//                        AdapterMaterie adapterNou = (AdapterMaterie) lvListaMaterii.getAdapter();
+                    }
                 }
             }
         });
 
+        adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaDBMaterii, getLayoutInflater(),launcher);
+        lvListaMaterii.setAdapter(adapter);
 
         // ========= Butoane ==========
 
@@ -136,32 +174,31 @@ public class PaginaMaterii extends AppCompatActivity {
             }
         });
 
-
         chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) {
-/*                listaMaterii.clear();
-                listaMaterii.addAll(originalMateriiList);*/
-                return;
-            };
-
-            int checkedId = checkedIds.get(0);
-
-            if (checkedId == R.id.chipAZ) {
-                // Sortare alfabetică A-Z
-                Collections.sort(listaMaterii, Comparator.comparing(Materie::getNumeMaterie));
+                listaDBMaterii.clear();
+                listaDBMaterii.addAll(materiiDAO.getMaterii());
                 adapter.notifyDataSetChanged();
+            }else{
+                int checkedId = checkedIds.get(0);
 
-            } else if (checkedId == R.id.chipZA) {
-                // Sortare alfabetică Z-A
-                Collections.sort(listaMaterii, (m1, m2) -> m2.getNumeMaterie().compareTo(m1.getNumeMaterie()));
-                adapter.notifyDataSetChanged();
+                if (checkedId == R.id.chipAZ) {
+                    Collections.sort(listaDBMaterii, Comparator.comparing(Materie::getNumeMaterie));
+                    adapter.notifyDataSetChanged();
 
-            } else if (checkedId == R.id.chipAssignments) {
+                } else if (checkedId == R.id.chipZA) {
+                    Collections.sort(listaDBMaterii, (m1, m2) -> m2.getNumeMaterie().compareTo(m1.getNumeMaterie()));
+                    adapter.notifyDataSetChanged();
+
+                } else if (checkedId == R.id.chipAssignments) {
 /*                        materiiList.clear();
                         materiiList.addAll(originalMateriiList);
                         subjectAdapter.notifyDataSetChanged();*/
+                }
             }
+
         });
     }
+
 
 }

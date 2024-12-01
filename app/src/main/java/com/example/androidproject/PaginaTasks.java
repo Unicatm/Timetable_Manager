@@ -21,6 +21,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.clase.TaskManager;
 import com.example.androidproject.customAdapters.AdapterTask;
+import com.example.androidproject.dataBases.MaterieDAO;
+import com.example.androidproject.dataBases.MaterieDB;
+import com.example.androidproject.dataBases.TasksDAO;
+import com.example.androidproject.dataBases.TasksDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -32,6 +36,9 @@ public class PaginaTasks extends AppCompatActivity {
     private FloatingActionButton fabAdaugaTask;
     private ListView lvListaTasks;
     private List<Task> listaTasks = new ArrayList<>();
+    private List<Task> listaDBTasks;
+    private TasksDB tasksDB;
+    private TasksDAO tasksDAO;
     //private TaskManager listaTasks = new TaskManager();
     private ActivityResultLauncher<Intent> launcher;
     private AdapterTask adapter;
@@ -47,8 +54,12 @@ public class PaginaTasks extends AppCompatActivity {
             return insets;
         });
 
+        tasksDB =TasksDB.getInstance(getApplicationContext());
+        tasksDAO = tasksDB.getTaskDAO();
+        listaDBTasks=tasksDAO.getTasks();
+
         lvListaTasks = findViewById(R.id.lvListaTasks);
-        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaTasks,getLayoutInflater());
+        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater());
         lvListaTasks.setAdapter(adapter);
 
         // ========= NAVIGATION ==========
@@ -90,10 +101,14 @@ public class PaginaTasks extends AppCompatActivity {
                Intent intent = result.getData();
                Task task = (Task) intent.getSerializableExtra("taskFromIntent");
                if (task!=null){
-                   listaTasks.add(task);
+//                   listaTasks.add(task);
+//                   adapter.notifyDataSetChanged();
+
+                   tasksDAO.insertTask(task);
+                   listaDBTasks.clear();
+                   listaDBTasks.addAll(tasksDAO.getTasks());
                    adapter.notifyDataSetChanged();
                    //Toast.makeText(this, task.toString(), Toast.LENGTH_SHORT).show();
-               }else{
                }
                //Toast.makeText(this,task.toString(),Toast.LENGTH_SHORT).show();
 
