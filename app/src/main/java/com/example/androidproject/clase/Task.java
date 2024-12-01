@@ -1,9 +1,16 @@
 package com.example.androidproject.clase;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity(tableName = "tasks")
 public class Task implements Serializable {
+
+    @PrimaryKey(autoGenerate = true)
+    private Long id;
     private String numeTask;
     private String denMaterie;
     private Date dataDeadline;
@@ -17,6 +24,14 @@ public class Task implements Serializable {
         this.dataDeadline = dataDeadline;
         this.tipDdl = tipDdl;
         this.descriere = descriere;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNumeTask() {

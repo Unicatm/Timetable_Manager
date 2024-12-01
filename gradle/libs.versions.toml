@@ -11,6 +11,8 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 materialVersion = "1.0.0"
 cardview = "1.0.0"
+roomRuntime = "2.6.1"
+roomCompiler = "2.6.1"
 
 [libraries]
 appcompat-v110 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -24,6 +26,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 material-v100 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 material-v1130alpha06 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

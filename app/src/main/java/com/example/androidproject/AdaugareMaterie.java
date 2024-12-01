@@ -89,12 +89,12 @@ public class AdaugareMaterie extends AppCompatActivity {
 
                     materie = new Materie(denMaterie,nrSala, isWeekly, tipSaptamana);
                 }else{
-                    materie = new Materie(denMaterie, nrSala, isWeekly);
+                    materie = new Materie(denMaterie, nrSala, isWeekly,"");
                 }
 
 
-                //Am adaugat denumirea materiei in lista din MateriiManager
-                //MateriiManager.adaugaMaterie(materie);
+//                Am adaugat denumirea materiei in lista din MateriiManager
+                MateriiManager.adaugaMaterie(materie);
 
                 Intent intent = getIntent();
                 intent.putExtra("materieFromIntent",materie);

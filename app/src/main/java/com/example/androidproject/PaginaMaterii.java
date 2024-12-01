@@ -22,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.customAdapters.AdapterMaterie;
+import com.example.androidproject.dataBases.MaterieDAO;
+import com.example.androidproject.dataBases.MaterieDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -35,10 +37,11 @@ import java.util.List;
 
 public class PaginaMaterii extends AppCompatActivity {
 
-    //BottomNavigationView btmNav = findViewById(R.id.btmNav);
+    private MaterieDB materiiDb;
+    private MaterieDAO materiiDAO;
     private FloatingActionButton fabAdaugaMaterie;
     private List<Materie> listaMaterii= MateriiManager.getMateriiList();
-    private List<Materie> originalMateriiList;
+    private List<Materie> listaDBMaterii;
     private ListView lvListaMaterii;
     private AdapterMaterie adapter;
     private ActivityResultLauncher<Intent> launcher;
@@ -53,6 +56,10 @@ public class PaginaMaterii extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        materiiDb = MaterieDB.getInstance(getApplicationContext());
+        materiiDAO = materiiDb.getMaterieDAO();
+        listaDBMaterii=materiiDAO.getMaterii();
 
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
         adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaMaterii, getLayoutInflater());
@@ -108,7 +115,6 @@ public class PaginaMaterii extends AppCompatActivity {
                     listaMaterii.add(materie);
                     adapter.notifyDataSetChanged();
                 }
-                //Toast.makeText(this, materie.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 

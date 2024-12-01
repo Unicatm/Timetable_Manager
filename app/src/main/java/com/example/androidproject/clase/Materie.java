@@ -1,25 +1,33 @@
 package com.example.androidproject.clase;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "materii")
 public class Materie implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private Long id;
     private String numeMaterie;
     private String sala;
     private Boolean saptamanal;
     private String tipSaptamana;
     private int noAssignments;
 
-    public Materie(String numeMaterie, String sala, Boolean saptamanal) {
-        this.numeMaterie = numeMaterie;
-        this.sala = sala;
-        this.saptamanal = saptamanal;
-    }
-
     public Materie(String numeMaterie, String sala, Boolean saptamanal, String tipSaptamana) {
         this.numeMaterie = numeMaterie;
         this.sala = sala;
         this.saptamanal = saptamanal;
         this.tipSaptamana = tipSaptamana;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNumeMaterie() {
