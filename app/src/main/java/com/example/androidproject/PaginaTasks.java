@@ -59,8 +59,6 @@ public class PaginaTasks extends AppCompatActivity {
         listaDBTasks=tasksDAO.getTasks();
 
         lvListaTasks = findViewById(R.id.lvListaTasks);
-        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater());
-        lvListaTasks.setAdapter(adapter);
 
         // ========= NAVIGATION ==========
         BottomNavigationView btmNav = findViewById(R.id.btmNav);
@@ -98,22 +96,45 @@ public class PaginaTasks extends AppCompatActivity {
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
            if(result.getResultCode() == RESULT_OK){
-               Intent intent = result.getData();
-               Task task = (Task) intent.getSerializableExtra("taskFromIntent");
-               if (task!=null){
+               if(result.getData().hasExtra("taskFromIntent")) {
+                   Intent intent = result.getData();
+                   Task task = (Task) intent.getSerializableExtra("taskFromIntent");
+                   if (task != null) {
 //                   listaTasks.add(task);
 //                   adapter.notifyDataSetChanged();
 
-                   tasksDAO.insertTask(task);
-                   listaDBTasks.clear();
-                   listaDBTasks.addAll(tasksDAO.getTasks());
-                   adapter.notifyDataSetChanged();
-                   //Toast.makeText(this, task.toString(), Toast.LENGTH_SHORT).show();
+                       tasksDAO.insertTask(task);
+                       listaDBTasks.clear();
+                       listaDBTasks.addAll(tasksDAO.getTasks());
+                       adapter.notifyDataSetChanged();
+                       //Toast.makeText(this, task.toString(), Toast.LENGTH_SHORT).show();
+                   }
+               }else if(result.getData().hasExtra("taskEditat")){
+                   Intent intent = result.getData();
+                   Task task = (Task) intent.getSerializableExtra("taskEditat");
+
+                   if(task!=null){
+                       Task taskDeEditat = (Task) intent.getSerializableExtra("editTask");
+
+                       taskDeEditat.setNumeTask(task.getNumeTask());
+                       taskDeEditat.setDenMaterie(task.getDenMaterie());
+                       taskDeEditat.setDescriere(task.getDescriere());
+                       taskDeEditat.setDataDeadline(task.getDataDeadline());
+                       taskDeEditat.setTipDdl(task.getTipDdl());
+
+                       tasksDAO.updateTask(taskDeEditat);
+
+                       listaDBTasks.clear();
+                       listaDBTasks.addAll(tasksDAO.getTasks());
+                       adapter.notifyDataSetChanged();
+                   }
                }
-               //Toast.makeText(this,task.toString(),Toast.LENGTH_SHORT).show();
 
            }
         });
+
+        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher);
+        lvListaTasks.setAdapter(adapter);
 
         fabAdaugaTask = findViewById(R.id.fabAdaugaTask);
         fabAdaugaTask.setOnClickListener(view -> {

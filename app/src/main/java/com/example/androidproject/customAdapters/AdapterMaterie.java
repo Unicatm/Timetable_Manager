@@ -68,8 +68,6 @@ public class AdapterMaterie extends ArrayAdapter<Materie> {
         tvNoAssingments.setText(materie.getNoAssignments()+" tasks");
 
         btnEdit.setOnClickListener(v -> {
-            Log.d("SetariMaterie", "Buton setări apăsat pentru: " + materie.getNumeMaterie());
-
             Intent intent = new Intent(context.getApplicationContext(), AdaugareMaterie.class);
             intent.putExtra("editMaterie", materie);
                 launcher.launch(intent);

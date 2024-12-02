@@ -70,6 +70,7 @@ public class PaginaMaterii extends AppCompatActivity {
 
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
 
+
         ChipGroup chipGroup = findViewById(R.id.cgSortare);
         Chip chipAZ = findViewById(R.id.chipAZ);
         Chip chipZA = findViewById(R.id.chipZA);
@@ -148,7 +149,6 @@ public class PaginaMaterii extends AppCompatActivity {
 
                         materiiDAO.updateMaterie(materieDeActualizat);
 
-                        materiiDAO.insertMaterie(materie);
                         listaDBMaterii.clear();
                         listaDBMaterii.addAll(materiiDAO.getMaterii());
                         adapter.notifyDataSetChanged();

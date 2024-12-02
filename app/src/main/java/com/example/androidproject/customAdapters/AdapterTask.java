@@ -2,6 +2,7 @@ package com.example.androidproject.customAdapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +11,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.example.androidproject.AdaugareMaterie;
+import com.example.androidproject.AdaugareTask;
 import com.example.androidproject.R;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.Task;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,14 +40,16 @@ public class AdapterTask extends ArrayAdapter<Task> {
     private int layoutId;
     private List<Task> tasks;
     private LayoutInflater layoutInflater;
+    private ActivityResultLauncher<Intent> launcher;
 
-    public AdapterTask(@NonNull Context context, int layoutId, @NonNull List<Task> tasks, LayoutInflater layoutInflater) {
+    public AdapterTask(@NonNull Context context, int layoutId, @NonNull List<Task> tasks, LayoutInflater layoutInflater,ActivityResultLauncher<Intent> launcher) {
         super(context, layoutId, tasks);
 
         this.context = context;
         this.layoutId=layoutId;
         this.tasks = tasks;
         this.layoutInflater=layoutInflater;
+        this.launcher=launcher;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -54,6 +61,7 @@ public class AdapterTask extends ArrayAdapter<Task> {
         Task task = tasks.get(position);
 
         MaterialCardView card = view.findViewById(R.id.cardTask);
+        FloatingActionButton fabSetariTask = view.findViewById(R.id.fabSetariTask);
 
         TextView tvDenTask = view.findViewById(R.id.tvDenTask);
         TextView tvDescrTask = view.findViewById(R.id.tvDescTask);
@@ -83,6 +91,11 @@ public class AdapterTask extends ArrayAdapter<Task> {
             tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
         }
 
+        fabSetariTask.setOnClickListener(v -> {
+            Intent intent = new Intent(context.getApplicationContext(), AdaugareTask.class);
+            intent.putExtra("editTask", task);
+            launcher.launch(intent);
+        });
 
         return view;
     }

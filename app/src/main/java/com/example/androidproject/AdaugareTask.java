@@ -17,7 +17,6 @@ import com.example.androidproject.clase.Categorie;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
-import com.example.androidproject.clase.TaskManager;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +36,7 @@ public class AdaugareTask extends AppCompatActivity  {
     private MaterieDB materieDB;
     private MaterieDAO materieDAO;
     private List<String> listaDenMateriiDB = new ArrayList<>();
+    private Boolean isEditing = false;
 
 
     @Override
@@ -60,7 +60,7 @@ public class AdaugareTask extends AppCompatActivity  {
         fabBackBtn.setOnClickListener(v -> finish());
 
 
-        EditText etDenMaterie = findViewById(R.id.etDenMaterie);
+        EditText etDenTask = findViewById(R.id.etDenTask);
         Spinner spnMaterie = findViewById(R.id.spnMaterie);
         EditText etDeadline = findViewById(R.id.etDeadline);
         Spinner spnTip = findViewById(R.id.spnTip);
@@ -82,9 +82,35 @@ public class AdaugareTask extends AppCompatActivity  {
         ArrayAdapter<String> adapterCateg = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriiList);
         spnTip.setAdapter(adapterCateg);
 
+
+        Intent editIntent = getIntent();
+
+        if(editIntent.hasExtra("editTask")){
+            isEditing = true;
+
+            Task task = (Task) editIntent.getSerializableExtra("editTask");
+            etDenTask.setText(task.getNumeTask());
+            for(int i=0;i<spnMaterie.getCount();i++){
+                if(task.getDenMaterie().equals(adapterDenMaterie.getItem(i))){
+                    spnMaterie.setSelection(i);
+                }
+            }
+
+            etDeadline.setText(new SimpleDateFormat("dd.MM.yyyy").format(task.getDataDeadline()));
+
+            for(int i=0;i<spnTip.getCount();i++){
+                if(task.getTipDdl().equals(adapterCateg.getItem(i))){
+                    spnTip.setSelection(i);
+                }
+            }
+
+            etDescriere.setText(task.getDescriere());
+
+        }
+
         btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
         btnAdaugaTask.setOnClickListener(view->{
-                String denTask = String.valueOf(etDenMaterie.getText());
+                String denTask = String.valueOf(etDenTask.getText());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                 Date deadline =null;
                 try {
@@ -99,7 +125,12 @@ public class AdaugareTask extends AppCompatActivity  {
                 Task task = new Task(denTask,materie,deadline,tipDdl,descriere);
 
                 Intent intent = getIntent();
-                intent.putExtra("taskFromIntent", task);
+
+                if(isEditing){
+                    intent.putExtra("taskEditat",task);
+                }else{
+                    intent.putExtra("taskFromIntent", task);
+                }
                 setResult(RESULT_OK, intent);
                 finish();
                 //startActivity(intent);

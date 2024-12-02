@@ -21,6 +21,9 @@ public interface MaterieDAO {
     @Delete
     void deleteMaterie(Materie materie);
 
+    @Query("DELETE FROM materii")
+    void deleteAllMaterii();
+
     @Query("SELECT * FROM materii")
     List<Materie> getMaterii();
 
