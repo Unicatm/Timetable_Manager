@@ -128,6 +128,10 @@ public class PaginaTasks extends AppCompatActivity {
                        listaDBTasks.addAll(tasksDAO.getTasks());
                        adapter.notifyDataSetChanged();
                    }
+               }else if(result.getData().hasExtra("taskSters")){
+                   listaDBTasks.clear();
+                   listaDBTasks.addAll(tasksDAO.getTasks());
+                   adapter.notifyDataSetChanged();
                }
 
            }

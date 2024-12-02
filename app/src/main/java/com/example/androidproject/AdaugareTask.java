@@ -2,10 +2,12 @@ package com.example.androidproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,8 @@ import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
+import com.example.androidproject.dataBases.TasksDAO;
+import com.example.androidproject.dataBases.TasksDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
@@ -56,6 +60,8 @@ public class AdaugareTask extends AppCompatActivity  {
 
         // ========= Butoane ==========
 
+        Button btnStergeTask = findViewById(R.id.btnStergeTask);
+
         fabBackBtn = findViewById(R.id.fabBackBtn);
         fabBackBtn.setOnClickListener(v -> finish());
 
@@ -88,6 +94,13 @@ public class AdaugareTask extends AppCompatActivity  {
         if(editIntent.hasExtra("editTask")){
             isEditing = true;
 
+            TextView tvTitlu = findViewById(R.id.tvTitlu);
+            tvTitlu.setText("Editeaza taskul");
+            btnStergeTask.setVisibility(View.VISIBLE);
+
+            Button btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
+            btnAdaugaTask.setText("Salveaza modificarile");
+
             Task task = (Task) editIntent.getSerializableExtra("editTask");
             etDenTask.setText(task.getNumeTask());
             for(int i=0;i<spnMaterie.getCount();i++){
@@ -105,6 +118,18 @@ public class AdaugareTask extends AppCompatActivity  {
             }
 
             etDescriere.setText(task.getDescriere());
+
+            btnStergeTask.setOnClickListener(v->{
+                TasksDB tasksDB = TasksDB.getInstance(getApplicationContext());
+                TasksDAO tasksDAO = tasksDB.getTaskDAO();
+
+                tasksDAO.deleteTask(task);
+
+                Intent intent = new Intent();
+                intent.putExtra("taskSters", true);
+                setResult(RESULT_OK,intent);
+                finish();
+            });
 
         }
 

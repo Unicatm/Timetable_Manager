@@ -20,11 +20,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
+import com.example.androidproject.dataBases.MaterieDAO;
+import com.example.androidproject.dataBases.MaterieDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AdaugareMaterie extends AppCompatActivity {
 
-    private Button btnAdaugaMaterie;
     private FloatingActionButton fabBackBtn;
     private boolean isEditing=false;
 
@@ -41,7 +42,8 @@ public class AdaugareMaterie extends AppCompatActivity {
         });
 
         // ========= BUTOANE ==========
-        btnAdaugaMaterie = findViewById(R.id.btnAdaugaMaterie);
+        Button btnAdaugaMaterie = findViewById(R.id.btnAdaugaMaterie);
+        Button btnStergeMaterie = findViewById(R.id.btnStergeMaterie);
 
 
         fabBackBtn = findViewById(R.id.fabBackBtn);
@@ -75,8 +77,10 @@ public class AdaugareMaterie extends AppCompatActivity {
 
         if(editIntent.hasExtra("editMaterie")){
             isEditing = true;
+
             btnAdaugaMaterie.setText("Salveaza modificarile");
             tvTitlu.setText("Editeaza materia");
+            btnStergeMaterie.setVisibility(View.VISIBLE);
 
             Materie materieApasata = (Materie) editIntent.getSerializableExtra("editMaterie");
 
@@ -101,6 +105,18 @@ public class AdaugareMaterie extends AppCompatActivity {
                 ckbFrecventa.setChecked(false);
                 rgFrecventa.setVisibility(View.GONE);
             }
+
+            btnStergeMaterie.setOnClickListener(v->{
+                MaterieDB materieDB = MaterieDB.getInstance(getApplicationContext());
+                MaterieDAO materieDAO = materieDB.getMaterieDAO();
+
+                materieDAO.deleteMaterie(materieApasata);
+
+                Intent intent = new Intent();
+                intent.putExtra("materieStearsa", true);
+                setResult(RESULT_OK,intent);
+                finish();
+            });
 
         }
 

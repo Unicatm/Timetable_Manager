@@ -155,6 +155,10 @@ public class PaginaMaterii extends AppCompatActivity {
 
 //                        AdapterMaterie adapterNou = (AdapterMaterie) lvListaMaterii.getAdapter();
                     }
+                }else if(result.getData().hasExtra("materieStearsa")){
+                    listaDBMaterii.clear();
+                    listaDBMaterii.addAll(materiiDAO.getMaterii());
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
