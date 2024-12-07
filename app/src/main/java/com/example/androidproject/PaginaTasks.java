@@ -3,6 +3,8 @@ package com.example.androidproject;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +31,9 @@ import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.example.androidproject.dataBases.TasksDAO;
 import com.example.androidproject.dataBases.TasksDB;
+import com.example.androidproject.jsonHttps.HttpsManager;
+import com.example.androidproject.jsonHttps.MaterieParser;
+import com.example.androidproject.jsonHttps.TaskParser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
@@ -40,11 +45,12 @@ public class PaginaTasks extends AppCompatActivity {
     private FloatingActionButton fabAdaugaTask;
     private ListView lvListaTasks;
     private List<Task> listaTasks = new ArrayList<>();
-    private List<Task> listaDBTasks = new ArrayList<>();
+    private static List<Task> listaDBTasks = new ArrayList<>();
 
     //private TaskManager listaTasks = new TaskManager();
     private ActivityResultLauncher<Intent> launcher;
-    private AdapterTask adapter;
+    private static AdapterTask adapter;
+    private final static String URL_TASKS = "https://www.jsonkeeper.com/b/V7VS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class PaginaTasks extends AppCompatActivity {
                    Intent intent = result.getData();
                    Task task = (Task) intent.getSerializableExtra("taskFromIntent");
                    Materie materieDinTask = materieDAO.getMaterieByName(task.getDenMaterie());
-                   Log.i("TASK",task.toString());
+                   Log.i("TASK",materieDinTask.getId().toString());
                    task.setMaterieId(materieDinTask.getId());
 
                    if (task != null) {
@@ -108,9 +114,16 @@ public class PaginaTasks extends AppCompatActivity {
                        adapter.notifyDataSetChanged();
                    }
                }else if(result.getData().hasExtra("taskSters")){
-                   listaDBTasks.clear();
-                   listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
-                   adapter.notifyDataSetChanged();
+
+                   Intent intent = result.getData();
+                   Task task = (Task) intent.getSerializableExtra("taskSters");
+
+                   if(task!=null){
+                       tasksDAO.deleteTask(task);
+                       listaDBTasks.clear();
+                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
+                       adapter.notifyDataSetChanged();
+                   }
                }
 
            }
@@ -118,6 +131,8 @@ public class PaginaTasks extends AppCompatActivity {
 
         adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher);
         lvListaTasks.setAdapter(adapter);
+
+        getTasksFromHttps();
 
         BottomNavigationView btmNav = findViewById(R.id.btmNav);
         btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -137,8 +152,6 @@ public class PaginaTasks extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 } else if (id == R.id.pgAnunturi) {
-                    intent = new Intent(getApplicationContext(), PaginaTasks.class);
-                    startActivity(intent);
                     return true;
                 }else if (id == R.id.pgNotite) {
                     intent = new Intent(getApplicationContext(), PaginaNotite.class);
@@ -157,5 +170,22 @@ public class PaginaTasks extends AppCompatActivity {
             launcher.launch(intent);
         });
 
+    }
+
+    private static void getTasksFromHttps(){
+        Thread thread=new Thread(){
+            @Override
+            public void run() {
+                HttpsManager manager = new HttpsManager(URL_TASKS);
+                String json = manager.procesare();
+
+                new Handler(Looper.getMainLooper()).post(()->{
+                    listaDBTasks.addAll(TaskParser.parseJSON(json));
+                    adapter.notifyDataSetChanged();
+
+                });
+            }
+        };
+        thread.start();
     }
 }

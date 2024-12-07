@@ -5,6 +5,8 @@ import static com.example.androidproject.R.*;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +32,8 @@ import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.example.androidproject.dataBases.TasksDAO;
 import com.example.androidproject.dataBases.TasksDB;
+import com.example.androidproject.jsonHttps.HttpsManager;
+import com.example.androidproject.jsonHttps.MaterieParser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -45,11 +49,13 @@ public class PaginaMaterii extends AppCompatActivity {
 
     private FloatingActionButton fabAdaugaMaterie;
     //private List<Materie> listaMaterii= MateriiManager.getMateriiList();
-    private List<Materie> listaDBMaterii;
+    private static List<Materie> listaDBMaterii;
     private ListView lvListaMaterii;
-    private AdapterMaterie adapter;
+    private static AdapterMaterie adapter;
     private ActivityResultLauncher<Intent> launcher;
     private Long orarId;
+
+    private static final String URL_MATERII = "https://www.jsonkeeper.com/b/0JB8";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,7 @@ public class PaginaMaterii extends AppCompatActivity {
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
         AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
         MaterieDAO materiiDAO = aplicatieDB.getMaterieDAO();
+        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
 
         orarId = getIntent().getLongExtra("orarId", -1);
         Log.i("ORAR_ID_MAT",orarId.toString());
@@ -75,6 +82,10 @@ public class PaginaMaterii extends AppCompatActivity {
             listaDBMaterii = new ArrayList<>();
         }
 
+        for (Materie m : listaDBMaterii) {
+            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
+            m.setNoAssignments(numarTaskuri);
+        }
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
 
 
@@ -98,13 +109,12 @@ public class PaginaMaterii extends AppCompatActivity {
 
                         materiiDAO.insertMaterie(materie);
                         listaDBMaterii.clear();
+
+                        for (Materie m : listaDBMaterii) {
+                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
+                            m.setNoAssignments(numarTaskuri);
+                        }
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
-
-
-//                        for (Materie m : listaDBMaterii) {
-//                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
-//                            m.setNoAssignments(numarTaskuri);
-//                        }
                         adapter.notifyDataSetChanged();
                     }
                 }else if(result.getData().hasExtra("materieEditata")){
@@ -139,12 +149,15 @@ public class PaginaMaterii extends AppCompatActivity {
                     Log.i("ORAR_ID_MAT_INT",orarId.toString());
                     listaDBMaterii = materiiDAO.getMateriiOrar(orarId);
                     adapter.notifyDataSetChanged();
+
                 }
             }
         });
 
         adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaDBMaterii, getLayoutInflater(),launcher);
         lvListaMaterii.setAdapter(adapter);
+
+        getMateriiFromHttps();
 
         // ========= Butoane ==========
 
@@ -156,8 +169,6 @@ public class PaginaMaterii extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if(id ==R.id.pgMaterii){
-                    intent = new Intent(getApplicationContext(), PaginaMaterii.class);
-                    startActivity(intent);
                     return true;
                 } else if (id == R.id.pgOrar) {
                     intent = new Intent(getApplicationContext(), PaginaOrar.class);
@@ -166,6 +177,7 @@ public class PaginaMaterii extends AppCompatActivity {
                 } else if (id == R.id.pgAnunturi) {
                     intent = new Intent(getApplicationContext(), PaginaTasks.class);
                     intent.putExtra("orarIdPtTasks", orarId);
+                    setResult(RESULT_OK,intent);
                     launcher.launch(intent);
                     return true;
                 }else if (id == R.id.pgNotite) {
@@ -220,5 +232,21 @@ public class PaginaMaterii extends AppCompatActivity {
         });
     }
 
+    private static void getMateriiFromHttps(){
+        Thread thread=new Thread(){
+            @Override
+            public void run() {
+                HttpsManager manager = new HttpsManager(URL_MATERII);
+                String json = manager.procesare();
+
+                new Handler(Looper.getMainLooper()).post(()->{
+                    listaDBMaterii.addAll(MaterieParser.parseJSON(json));
+                    adapter.notifyDataSetChanged();
+
+                });
+            }
+        };
+        thread.start();
+    }
 
 }

@@ -122,10 +122,8 @@ public class AdaugareTask extends AppCompatActivity  {
             etDescriere.setText(task.getDescriere());
 
             btnStergeTask.setOnClickListener(v->{
-                tasksDAO.deleteTask(task);
-
                 Intent intent = new Intent();
-                intent.putExtra("taskSters", true);
+                intent.putExtra("taskSters", task);
                 setResult(RESULT_OK,intent);
                 finish();
             });
