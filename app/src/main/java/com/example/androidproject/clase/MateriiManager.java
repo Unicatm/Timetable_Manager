@@ -8,11 +8,11 @@ public class MateriiManager {
     private static ArrayList<Materie> materiiList = new ArrayList<>();
 
     public static void adaugaMaterie(Materie materie) {
-//        for (Materie m : materiiList) {
-//            if (m.getNumeMaterie().equals(materie.getNumeMaterie())) {
-//                return;
-//            }
-//        }
+        for (Materie m : materiiList) {
+            if (m.getNumeMaterie().equals(materie.getNumeMaterie())) {
+                return;
+            }
+        }
         materiiList.add(materie);
     }
 

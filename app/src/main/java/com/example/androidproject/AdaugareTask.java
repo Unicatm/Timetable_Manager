@@ -1,6 +1,7 @@
 package com.example.androidproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import com.example.androidproject.clase.Categorie;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
 import com.example.androidproject.clase.Task;
+import com.example.androidproject.dataBases.AplicatieDB;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.example.androidproject.dataBases.TasksDAO;
@@ -37,8 +39,6 @@ public class AdaugareTask extends AppCompatActivity  {
     private Button btnAdaugaTask;
     private List<String> listaDenMaterii = MateriiManager.getNumeMateriiList();
     private List<String> categoriiList;
-    private MaterieDB materieDB;
-    private MaterieDAO materieDAO;
     private List<String> listaDenMateriiDB = new ArrayList<>();
     private Boolean isEditing = false;
 
@@ -54,9 +54,9 @@ public class AdaugareTask extends AppCompatActivity  {
             return insets;
         });
 
-        materieDB = MaterieDB.getInstance(getApplicationContext());
-        materieDAO = materieDB.getMaterieDAO();
-
+        AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
+        MaterieDAO materieDAO = aplicatieDB.getMaterieDAO();
+        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
 
         // ========= Butoane ==========
 
@@ -72,7 +72,9 @@ public class AdaugareTask extends AppCompatActivity  {
         Spinner spnTip = findViewById(R.id.spnTip);
         EditText etDescriere = findViewById(R.id.etDescriere);
 
-        List<Materie> listaMateriiDB = materieDAO.getMaterii();
+        Long orarId = getIntent().getLongExtra("orarIdAdaugare",-1L);
+
+        List<Materie> listaMateriiDB = materieDAO.getMateriiOrar(orarId);
         for (Materie materie : listaMateriiDB) {
             listaDenMateriiDB.add(materie.getNumeMaterie());
         }
@@ -120,9 +122,6 @@ public class AdaugareTask extends AppCompatActivity  {
             etDescriere.setText(task.getDescriere());
 
             btnStergeTask.setOnClickListener(v->{
-                TasksDB tasksDB = TasksDB.getInstance(getApplicationContext());
-                TasksDAO tasksDAO = tasksDB.getTaskDAO();
-
                 tasksDAO.deleteTask(task);
 
                 Intent intent = new Intent();
@@ -147,7 +146,7 @@ public class AdaugareTask extends AppCompatActivity  {
                 Categorie tipDdl = Categorie.valueOf(spnTip.getSelectedItem().toString());
                 String descriere = String.valueOf(etDescriere.getText());
 
-                Task task = new Task(denTask,materie,deadline,tipDdl,descriere);
+                Task task = new Task(denTask,materie,deadline,tipDdl,descriere, (long) -1);
 
                 Intent intent = getIntent();
 

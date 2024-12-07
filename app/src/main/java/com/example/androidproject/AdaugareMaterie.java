@@ -20,6 +20,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
+import com.example.androidproject.dataBases.AplicatieDAO;
+import com.example.androidproject.dataBases.AplicatieDB;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,6 +44,11 @@ public class AdaugareMaterie extends AppCompatActivity {
         });
 
         // ========= BUTOANE ==========
+
+        AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
+        AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
+        MaterieDAO materiiDAO = aplicatieDB.getMaterieDAO();
+
         Button btnAdaugaMaterie = findViewById(R.id.btnAdaugaMaterie);
         Button btnStergeMaterie = findViewById(R.id.btnStergeMaterie);
 
@@ -50,8 +57,7 @@ public class AdaugareMaterie extends AppCompatActivity {
         fabBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AdaugareMaterie.this, PaginaMaterii.class);
-                startActivity(intent);
+                finish();
             }
         });
 
@@ -107,10 +113,7 @@ public class AdaugareMaterie extends AppCompatActivity {
             }
 
             btnStergeMaterie.setOnClickListener(v->{
-                MaterieDB materieDB = MaterieDB.getInstance(getApplicationContext());
-                MaterieDAO materieDAO = materieDB.getMaterieDAO();
-
-                materieDAO.deleteMaterie(materieApasata);
+                materiiDAO.deleteMaterie(materieApasata);
 
                 Intent intent = new Intent();
                 intent.putExtra("materieStearsa", true);
@@ -140,9 +143,9 @@ public class AdaugareMaterie extends AppCompatActivity {
                         tipSaptamana = "impara";
                     }
 
-                    materie = new Materie(denMaterie,nrSala, isWeekly, tipSaptamana);
+                    materie = new Materie(denMaterie,nrSala, isWeekly, tipSaptamana, (long) -1);
                 }else{
-                    materie = new Materie(denMaterie, nrSala, isWeekly,"");
+                    materie = new Materie(denMaterie, nrSala, isWeekly,"", (long) -1);
                 }
 
 

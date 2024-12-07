@@ -13,7 +13,7 @@ import com.example.androidproject.clase.Task;
 import java.util.Date;
 
 @TypeConverters({Converters.class})
-@Database(entities = {Task.class},version = 1,exportSchema = false)
+//@Database(entities = {Task.class},version = 2,exportSchema = false)
 public abstract class TasksDB extends RoomDatabase {
 
     private static final String dbName = "tasks.db";
@@ -26,7 +26,6 @@ public abstract class TasksDB extends RoomDatabase {
                     .fallbackToDestructiveMigration()
                     .build();
         }
-
 
         return instance;
     }

@@ -1,6 +1,7 @@
 package com.example.androidproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,9 +19,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.clase.TaskManager;
 import com.example.androidproject.customAdapters.AdapterTask;
+import com.example.androidproject.dataBases.AplicatieDAO;
+import com.example.androidproject.dataBases.AplicatieDB;
 import com.example.androidproject.dataBases.MaterieDAO;
 import com.example.androidproject.dataBases.MaterieDB;
 import com.example.androidproject.dataBases.TasksDAO;
@@ -36,9 +40,8 @@ public class PaginaTasks extends AppCompatActivity {
     private FloatingActionButton fabAdaugaTask;
     private ListView lvListaTasks;
     private List<Task> listaTasks = new ArrayList<>();
-    private List<Task> listaDBTasks;
-    private TasksDB tasksDB;
-    private TasksDAO tasksDAO;
+    private List<Task> listaDBTasks = new ArrayList<>();
+
     //private TaskManager listaTasks = new TaskManager();
     private ActivityResultLauncher<Intent> launcher;
     private AdapterTask adapter;
@@ -54,60 +57,36 @@ public class PaginaTasks extends AppCompatActivity {
             return insets;
         });
 
-        tasksDB =TasksDB.getInstance(getApplicationContext());
-        tasksDAO = tasksDB.getTaskDAO();
-        listaDBTasks=tasksDAO.getTasks();
+        AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
+        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
+        MaterieDAO materieDAO = aplicatieDB.getMaterieDAO();
 
+//        tasksDB =TasksDB.getInstance(getApplicationContext());
+//        tasksDAO = tasksDB.getTaskDAO();
+
+        Long orarId = getIntent().getLongExtra("orarIdPtTasks", -1L);
+        Log.i("ORAR_ID",orarId.toString());
+
+        listaDBTasks=tasksDAO.getTasksForOrar(orarId);
         lvListaTasks = findViewById(R.id.lvListaTasks);
-
-        // ========= NAVIGATION ==========
-        BottomNavigationView btmNav = findViewById(R.id.btmNav);
-        btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent;
-                int id = item.getItemId();
-
-                if(id ==R.id.pgMaterii){
-                    intent = new Intent(PaginaTasks.this, PaginaMaterii.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    launcher.launch(intent);
-                    return true;
-                } else if (id == R.id.pgOrar) {
-                    intent = new Intent(PaginaTasks.this, PaginaOrar.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    launcher.launch(intent);
-                    return true;
-                } else if (id == R.id.pgAnunturi) {
-                    intent = new Intent(PaginaTasks.this, PaginaTasks.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    launcher.launch(intent);
-                    return true;
-                }else if (id == R.id.pgNotite) {
-                    intent = new Intent(PaginaTasks.this, PaginaNotite.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    launcher.launch(intent);
-                    return true;
-                }
-
-                return false;
-            }
-        });
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
            if(result.getResultCode() == RESULT_OK){
                if(result.getData().hasExtra("taskFromIntent")) {
                    Intent intent = result.getData();
                    Task task = (Task) intent.getSerializableExtra("taskFromIntent");
+                   Materie materieDinTask = materieDAO.getMaterieByName(task.getDenMaterie());
+                   Log.i("TASK",task.toString());
+                   task.setMaterieId(materieDinTask.getId());
+
                    if (task != null) {
-//                   listaTasks.add(task);
-//                   adapter.notifyDataSetChanged();
+                   //listaTasks.add(task);
+                   //adapter.notifyDataSetChanged();
 
                        tasksDAO.insertTask(task);
                        listaDBTasks.clear();
-                       listaDBTasks.addAll(tasksDAO.getTasks());
+                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
                        adapter.notifyDataSetChanged();
-                       //Toast.makeText(this, task.toString(), Toast.LENGTH_SHORT).show();
                    }
                }else if(result.getData().hasExtra("taskEditat")){
                    Intent intent = result.getData();
@@ -123,14 +102,14 @@ public class PaginaTasks extends AppCompatActivity {
                        taskDeEditat.setTipDdl(task.getTipDdl());
 
                        tasksDAO.updateTask(taskDeEditat);
-
+//
                        listaDBTasks.clear();
-                       listaDBTasks.addAll(tasksDAO.getTasks());
+                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
                        adapter.notifyDataSetChanged();
                    }
                }else if(result.getData().hasExtra("taskSters")){
                    listaDBTasks.clear();
-                   listaDBTasks.addAll(tasksDAO.getTasks());
+                   listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
                    adapter.notifyDataSetChanged();
                }
 
@@ -140,10 +119,41 @@ public class PaginaTasks extends AppCompatActivity {
         adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher);
         lvListaTasks.setAdapter(adapter);
 
+        BottomNavigationView btmNav = findViewById(R.id.btmNav);
+        btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                int id = item.getItemId();
+
+                if(id ==R.id.pgMaterii){
+                    intent =new Intent (getApplicationContext(), PaginaMaterii.class);
+                    intent.putExtra("orarIdPtMaterii", orarId);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    return true;
+                } else if (id == R.id.pgOrar) {
+                    intent = new Intent(getApplicationContext(), PaginaOrar.class);
+                    startActivity(intent);
+                    return true;
+                } else if (id == R.id.pgAnunturi) {
+                    intent = new Intent(getApplicationContext(), PaginaTasks.class);
+                    startActivity(intent);
+                    return true;
+                }else if (id == R.id.pgNotite) {
+                    intent = new Intent(getApplicationContext(), PaginaNotite.class);
+                    startActivity(intent);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
         fabAdaugaTask = findViewById(R.id.fabAdaugaTask);
         fabAdaugaTask.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), AdaugareTask.class);
-            //startActivity(intent);
+            intent.putExtra("orarIdAdaugare", orarId);
             launcher.launch(intent);
         });
 

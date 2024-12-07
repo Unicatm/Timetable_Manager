@@ -24,9 +24,15 @@ public interface MaterieDAO {
     @Query("DELETE FROM materii")
     void deleteAllMaterii();
 
-    @Query("SELECT * FROM materii")
+    @Query("SELECT *FROM materii")
     List<Materie> getMaterii();
+
+    @Query("SELECT * FROM materii WHERE orar_id=:orarId")
+    List<Materie> getMateriiOrar(Long orarId);
 
     @Query("SELECT * FROM materii where id=:idCautat")
     Materie getMaterieById(Long idCautat);
+
+    @Query("SELECT * FROM materii WHERE nume_materie=:nume_materie")
+    Materie getMaterieByName(String nume_materie);
 }

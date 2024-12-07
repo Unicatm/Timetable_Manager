@@ -1,12 +1,14 @@
 package com.example.androidproject.clase;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(tableName = "tasks")
+@Entity(tableName = "tasks",foreignKeys = @ForeignKey(entity = Materie.class,parentColumns = "id",childColumns = "materie_id",onDelete = ForeignKey.CASCADE))
 public class Task implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
@@ -16,14 +18,25 @@ public class Task implements Serializable {
     private Date dataDeadline;
     private Categorie tipDdl;
     private String descriere;
+    @ColumnInfo(name = "materie_id")
+    private Long materieId;
 
 
-    public Task(String numeTask, String denMaterie, Date dataDeadline, Categorie tipDdl, String descriere) {
+    public Long getMaterieId() {
+        return materieId;
+    }
+
+    public void setMaterieId(long materieId) {
+        this.materieId = materieId;
+    }
+
+    public Task(String numeTask, String denMaterie, Date dataDeadline, Categorie tipDdl, String descriere, Long materieId) {
         this.numeTask = numeTask;
         this.denMaterie = denMaterie;
         this.dataDeadline = dataDeadline;
         this.tipDdl = tipDdl;
         this.descriere = descriere;
+        this.materieId=materieId;
     }
 
     public Long getId() {

@@ -22,32 +22,36 @@
             android:id="@+id/tvFacultateAn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:text="CSIE, An 2, Sem. 1"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/cgSortare"
+            app:layout_constraintStart_toEndOf="@+id/fabBack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.169" />
 
         <TextView
             android:id="@+id/tvTitluPg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="Materii"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFacultateAn" />
+            app:layout_constraintTop_toBottomOf="@+id/fabBack" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAdaugaMaterie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:clickable="true"
             app:elevation="0dp"
             app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@+id/lvListaMaterii"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFacultateAn"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <ListView
@@ -94,6 +98,15 @@
                 android:checkable="true"
                 android:text="NO. tasks" />
         </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="?attr/homeAsUpIndicator" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

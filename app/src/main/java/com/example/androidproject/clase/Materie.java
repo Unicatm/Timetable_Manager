@@ -1,25 +1,40 @@
 package com.example.androidproject.clase;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "materii")
+@Entity(tableName = "materii",foreignKeys = @ForeignKey(entity = Orar.class,parentColumns = "id",childColumns = "orar_id",onDelete = ForeignKey.CASCADE))
 public class Materie implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private Long id;
+    @ColumnInfo(name = "nume_materie")
     private String numeMaterie;
     private String sala;
     private Boolean saptamanal;
     private String tipSaptamana;
     private int noAssignments;
 
-    public Materie(String numeMaterie, String sala, Boolean saptamanal, String tipSaptamana) {
+    @ColumnInfo(name = "orar_id")
+    private Long orarId;
+
+    public Materie(String numeMaterie, String sala, Boolean saptamanal, String tipSaptamana, Long orarId) {
         this.numeMaterie = numeMaterie;
         this.sala = sala;
         this.saptamanal = saptamanal;
         this.tipSaptamana = tipSaptamana;
+        this.orarId=orarId;
+    }
+
+    public Long getOrarId() {
+        return orarId;
+    }
+
+    public void setOrarId(long orarId) {
+        this.orarId = orarId;
     }
 
     public Long getId() {

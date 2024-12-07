@@ -1,22 +1,37 @@
 package com.example.androidproject.clase;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
 import java.util.Date;
 
-public class Orar {
+
+@Entity(tableName = "orare")
+public class Orar implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private Long id;
     private String facultate;
-    private int an;
-    private int semestru;
+    private String an;
+    private String semestru;
     private Date oraStart;
     private Date oraFinal;
-    private int durata;
 
-    public Orar(String facultate, int an, int semestru, Date oraStart, Date oraFinal, int durata) {
+
+    public Orar(String facultate, String an, String semestru, Date oraStart, Date oraFinal) {
         this.facultate = facultate;
         this.an = an;
         this.semestru = semestru;
         this.oraStart = oraStart;
         this.oraFinal = oraFinal;
-        this.durata = durata;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFacultate() {
@@ -27,19 +42,19 @@ public class Orar {
         this.facultate = facultate;
     }
 
-    public int getAn() {
+    public String getAn() {
         return an;
     }
 
-    public void setAn(int an) {
+    public void setAn(String an) {
         this.an = an;
     }
 
-    public int getSemestru() {
+    public String getSemestru() {
         return semestru;
     }
 
-    public void setSemestru(int semestru) {
+    public void setSemestru(String semestru) {
         this.semestru = semestru;
     }
 
@@ -59,11 +74,14 @@ public class Orar {
         this.oraFinal = oraFinal;
     }
 
-    public int getDurata() {
-        return durata;
-    }
-
-    public void setDurata(int durata) {
-        this.durata = durata;
+    @Override
+    public String toString() {
+        return "Orar{" +
+                "facultate='" + facultate + '\'' +
+                ", an='" + an + '\'' +
+                ", semestru='" + semestru + '\'' +
+                ", oraStart=" + oraStart +
+                ", oraFinal=" + oraFinal +
+                '}';
     }
 }

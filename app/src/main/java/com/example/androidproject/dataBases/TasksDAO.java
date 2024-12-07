@@ -24,6 +24,11 @@ public interface TasksDAO {
     @Query("SELECT * FROM tasks")
     List<Task> getTasks();
 
+    @Query("SELECT * FROM tasks t " +
+            "JOIN materii m ON t.materie_id = m.id " +
+            "WHERE m.orar_id = :orarId")
+    List<Task> getTasksForOrar(Long orarId);
+
     @Query("DELETE FROM tasks")
     void deleteAllTasks();
 

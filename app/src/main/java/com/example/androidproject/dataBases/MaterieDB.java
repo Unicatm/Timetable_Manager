@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.androidproject.clase.Materie;
 
-@Database(entities = {Materie.class}, version = 1, exportSchema = false)
+//@Database(entities = {Materie.class}, version = 1, exportSchema = false)
 public abstract class MaterieDB extends RoomDatabase {
     private static final String dbName = "materii.db";
     private static MaterieDB instance;
