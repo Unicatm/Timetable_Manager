@@ -33,6 +33,9 @@ public interface MaterieDAO {
     @Query("SELECT * FROM materii where id=:idCautat")
     Materie getMaterieById(Long idCautat);
 
+    @Query("SELECT COUNT(*) FROM materii WHERE orar_id=:id_orar")
+    int getNoMaterii(Long id_orar);
+
     @Query("SELECT * FROM materii WHERE nume_materie=:nume_materie")
     Materie getMaterieByName(String nume_materie);
 }

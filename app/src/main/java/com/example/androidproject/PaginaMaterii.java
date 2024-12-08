@@ -48,7 +48,6 @@ import java.util.List;
 public class PaginaMaterii extends AppCompatActivity {
 
     private FloatingActionButton fabAdaugaMaterie;
-    //private List<Materie> listaMaterii= MateriiManager.getMateriiList();
     private static List<Materie> listaDBMaterii;
     private ListView lvListaMaterii;
     private static AdapterMaterie adapter;
@@ -90,10 +89,6 @@ public class PaginaMaterii extends AppCompatActivity {
 
 
         ChipGroup chipGroup = findViewById(R.id.cgSortare);
-        Chip chipAZ = findViewById(R.id.chipAZ);
-        Chip chipZA = findViewById(R.id.chipZA);
-        Chip chipNoAssignments = findViewById(R.id.chipAssignments);
-
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
             if(result.getResultCode()==RESULT_OK) {

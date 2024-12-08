@@ -17,6 +17,9 @@ import com.example.androidproject.CreeareOrar;
 import com.example.androidproject.R;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.Orar;
+import com.example.androidproject.dataBases.AplicatieDAO;
+import com.example.androidproject.dataBases.AplicatieDB;
+import com.example.androidproject.dataBases.MaterieDAO;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -26,16 +29,14 @@ public class AdapterOrar extends ArrayAdapter<Orar> {
     private int layoutId;
     private List<Orar> lista;
     private LayoutInflater layoutInflater;
-    private ActivityResultLauncher<Intent> launcher;
 
-    public AdapterOrar(@NonNull Context context, int layoutId, @NonNull List<Orar> lista, LayoutInflater layoutInflater, ActivityResultLauncher<Intent> launcher) {
+    public AdapterOrar(@NonNull Context context, int layoutId, @NonNull List<Orar> lista, LayoutInflater layoutInflater) {
         super(context, layoutId, lista);
 
         this.context = context;
         this.layoutId=layoutId;
         this.lista = lista;
         this.layoutInflater=layoutInflater;
-        this.launcher = launcher;
     }
 
     @NonNull
@@ -45,21 +46,24 @@ public class AdapterOrar extends ArrayAdapter<Orar> {
 
         Orar orar = lista.get(position);
 
+        AplicatieDB aplicatieDB = AplicatieDB.getInstance(context);
+        MaterieDAO materiiDAO = aplicatieDB.getMaterieDAO();
+
         TextView tvFac = view.findViewById(R.id.tvFac);
         TextView tvSemestru = view.findViewById(R.id.tvSemestru);
         TextView tvNoMaterii = view.findViewById(R.id.tvNoMaterii);
-        FloatingActionButton btnEdit = view.findViewById(R.id.fabSetariOrar);
+        //FloatingActionButton btnEdit = view.findViewById(R.id.fabSetariOrar);
 
         tvFac.setText(orar.getFacultate());
-        tvSemestru.setText(orar.getSemestru());
-        //tvNoMaterii.setText(orar.getFacultate());
+        tvSemestru.setText("Semestrul "+orar.getSemestru());
+        tvNoMaterii.setText(materiiDAO.getNoMaterii(orar.getId()) + " materii");
 
 
-        btnEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(context.getApplicationContext(), CreeareOrar.class);
-            intent.putExtra("editOrar", orar);
-            launcher.launch(intent);
-        });
+//        btnEdit.setOnClickListener(v -> {
+//            Intent intent = new Intent(context.getApplicationContext(), CreeareOrar.class);
+//            intent.putExtra("editOrar", orar);
+//            launcher.launch(intent);
+//        });
 
         return view;
     }

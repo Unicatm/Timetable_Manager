@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,6 +17,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Orar;
+import com.example.androidproject.dataBases.AplicatieDAO;
+import com.example.androidproject.dataBases.AplicatieDB;
+import com.example.androidproject.dataBases.MaterieDAO;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
@@ -23,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CreeareOrar extends AppCompatActivity {
+
+    private Boolean isEditing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,9 @@ public class CreeareOrar extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
+        AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
 
         EditText etAddFac = findViewById(R.id.etAddFac);
         Spinner spnAnFac = findViewById(R.id.spnAnFac);
@@ -66,6 +75,46 @@ public class CreeareOrar extends AppCompatActivity {
 
         // ========= Butoane ==========
 
+        Intent editIntent = getIntent();
+
+        if(editIntent.hasExtra("editOrar")){
+            isEditing = true;
+
+            Button btnStergere = findViewById(R.id.btnSterge);
+            TextView tvTitluPg = findViewById(R.id.tvTitluPg);
+            tvTitluPg.setText("Editeaza orarul");
+
+            btnCreeareOrar.setText("Salveaza modificarile");
+
+            btnStergere.setVisibility(View.VISIBLE);
+
+            Orar orarApsat = (Orar) editIntent.getSerializableExtra("editOrar");
+
+            etAddFac.setText(orarApsat.getFacultate());
+            for(int i=0;i<spnSem.getCount();i++){
+                if(orarApsat.getAn().equals(adapterAn.getItem(i))){
+                    spnAnFac.setSelection(i);
+                }
+                if(orarApsat.getSemestru().equals(adapterSem.getItem(i))){
+                    spnSem.setSelection(i);
+                }
+                if(orarApsat.getOraStart().equals(adapterOraStart.getItem(i))){
+                    spnStartOrar.setSelection(i);
+                }
+                if(orarApsat.getOraFinal().equals(adapterOraFin.getItem(i))){
+                    spnFinalOrar.setSelection(i);
+                }
+            }
+
+            btnStergere.setOnClickListener(v->{
+                aplicatieDAO.deleteOrar(orarApsat);
+
+                Intent intent = new Intent();
+                intent.putExtra("orarSters",true);
+                setResult(RESULT_OK,intent);
+                finish();
+            });
+        }
 
         btnCreeareOrar.setOnClickListener(v-> {
 
@@ -84,9 +133,15 @@ public class CreeareOrar extends AppCompatActivity {
 
             Orar orar = new Orar(fac,an,semestru,oraStart,oraFinal);
 
-
             Intent intent = getIntent();
-            intent.putExtra("addOrar",orar);
+
+            if(isEditing){
+                intent.putExtra("materieEditata", orar);
+                isEditing=false;
+            }else{
+                intent.putExtra("addOrar",orar);
+            }
+
             setResult(RESULT_OK,intent);
             finish();
         });
