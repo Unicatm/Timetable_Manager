@@ -39,6 +39,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +54,7 @@ public class PaginaMaterii extends AppCompatActivity {
     private static AdapterMaterie adapter;
     private ActivityResultLauncher<Intent> launcher;
     private Long orarId;
-
+    private MaterieDAO materiiDAO;
     private static final String URL_MATERII = "https://www.jsonkeeper.com/b/0JB8";
 
     @Override
@@ -67,13 +68,15 @@ public class PaginaMaterii extends AppCompatActivity {
             return insets;
         });
 
+
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
-        AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
-        MaterieDAO materiiDAO = aplicatieDB.getMaterieDAO();
+        materiiDAO = aplicatieDB.getMaterieDAO();
         TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
 
         orarId = getIntent().getLongExtra("orarId", -1);
-        Log.i("ORAR_ID_MAT",orarId.toString());
+        if(orarId==-1){
+            orarId = getIntent().getLongExtra("orarIdPtMaterii",-1);
+        }
         if (orarId != -1) {
             listaDBMaterii = materiiDAO.getMateriiOrar(orarId);
         } else {
@@ -110,7 +113,7 @@ public class PaginaMaterii extends AppCompatActivity {
                             m.setNoAssignments(numarTaskuri);
                         }
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
-                        adapter.notifyDataSetChanged();
+
                     }
                 }else if(result.getData().hasExtra("materieEditata")){
                     Intent intent = result.getData();
@@ -125,9 +128,9 @@ public class PaginaMaterii extends AppCompatActivity {
                         materieDeActualizat.setSala(materie.getSala());
                         materieDeActualizat.setSaptamanal(materie.getSaptamanal());
 
-//
+
                         materiiDAO.updateMaterie(materieDeActualizat);
-//
+
                         listaDBMaterii.clear();
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
                         adapter.notifyDataSetChanged();
@@ -138,21 +141,22 @@ public class PaginaMaterii extends AppCompatActivity {
                     listaDBMaterii.clear();
                     listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
                     adapter.notifyDataSetChanged();
-                }else if(result.getData().hasExtra("orarIdPtMaterii")){
-                    Intent intent = result.getData();
-                    orarId = intent.getLongExtra("orarIdPtMaterii", -1L);
-                    Log.i("ORAR_ID_MAT_INT",orarId.toString());
-                    listaDBMaterii = materiiDAO.getMateriiOrar(orarId);
-                    adapter.notifyDataSetChanged();
-
                 }
+//                }else if(result.getData().hasExtra("orarIdPtMaterii")){
+//                    Intent intent = result.getData();
+//                    orarId = intent.getLongExtra("orarIdPtMaterii", -1L);
+//                    Log.i("ORAR_ID_MAT_INT",orarId.toString());
+//                    listaDBMaterii = materiiDAO.getMateriiOrar(orarId);
+//                    adapter.notifyDataSetChanged();
+//
+//                }
             }
         });
 
         adapter =new AdapterMaterie(getApplicationContext(), layout.card_materie,listaDBMaterii, getLayoutInflater(),launcher);
         lvListaMaterii.setAdapter(adapter);
 
-        getMateriiFromHttps();
+        //getMateriiFromHttps();
 
         // ========= Butoane ==========
 
@@ -171,12 +175,14 @@ public class PaginaMaterii extends AppCompatActivity {
                     return true;
                 } else if (id == R.id.pgAnunturi) {
                     intent = new Intent(getApplicationContext(), PaginaTasks.class);
+                    Log.i("ORAR_ID_MAT",orarId.toString());
                     intent.putExtra("orarIdPtTasks", orarId);
-                    setResult(RESULT_OK,intent);
                     launcher.launch(intent);
                     return true;
                 }else if (id == R.id.pgNotite) {
-                    intent = new Intent(getApplicationContext(), PaginaNotite.class);
+                    intent = new Intent(getApplicationContext(), PaginaNote.class);
+                    intent.putExtra("orarIdPtNote", orarId);
+                    launcher.launch(intent);
                     startActivity(intent);
                     return true;
                 }
@@ -226,6 +232,7 @@ public class PaginaMaterii extends AppCompatActivity {
 
         });
     }
+
 
     private static void getMateriiFromHttps(){
         Thread thread=new Thread(){

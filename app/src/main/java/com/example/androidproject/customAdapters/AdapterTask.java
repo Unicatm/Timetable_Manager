@@ -41,8 +41,9 @@ public class AdapterTask extends ArrayAdapter<Task> {
     private List<Task> tasks;
     private LayoutInflater layoutInflater;
     private ActivityResultLauncher<Intent> launcher;
+    private long orarId;
 
-    public AdapterTask(@NonNull Context context, int layoutId, @NonNull List<Task> tasks, LayoutInflater layoutInflater,ActivityResultLauncher<Intent> launcher) {
+    public AdapterTask(@NonNull Context context, int layoutId, @NonNull List<Task> tasks, LayoutInflater layoutInflater,ActivityResultLauncher<Intent> launcher,long orarId) {
         super(context, layoutId, tasks);
 
         this.context = context;
@@ -50,6 +51,7 @@ public class AdapterTask extends ArrayAdapter<Task> {
         this.tasks = tasks;
         this.layoutInflater=layoutInflater;
         this.launcher=launcher;
+        this.orarId=orarId;
     }
 
     @SuppressLint("ResourceAsColor")
@@ -93,7 +95,8 @@ public class AdapterTask extends ArrayAdapter<Task> {
 
         fabSetariTask.setOnClickListener(v -> {
             Intent intent = new Intent(context.getApplicationContext(), AdaugareTask.class);
-            intent.putExtra("editTask", task);
+            intent.putExtra("editTask", position);
+            intent.putExtra("orarIdAdaugare",orarId);
             launcher.launch(intent);
         });
 

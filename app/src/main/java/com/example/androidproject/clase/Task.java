@@ -90,11 +90,13 @@ public class Task implements Serializable {
     @Override
     public String toString() {
         return "Task{" +
+                "id='" + id + '\'' +
                 "numeTask='" + numeTask + '\'' +
                 ", denMaterie='" + denMaterie + '\'' +
                 ", dataDeadline=" + dataDeadline +
                 ", tipDdl=" + tipDdl +
                 ", descriere='" + descriere + '\'' +
+                ", idMaterie='" + materieId+ '\'' +
                 '}';
     }
 }

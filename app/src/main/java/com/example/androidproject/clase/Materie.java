@@ -21,6 +21,8 @@ public class Materie implements Serializable {
     @ColumnInfo(name = "orar_id")
     private Long orarId;
 
+    public Materie(){}
+
     public Materie(String numeMaterie, String sala, Boolean saptamanal, String tipSaptamana, Long orarId) {
         this.numeMaterie = numeMaterie;
         this.sala = sala;

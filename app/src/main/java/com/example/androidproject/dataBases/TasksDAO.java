@@ -21,13 +21,19 @@ public interface TasksDAO {
     @Delete
     void deleteTask(Task task);
 
+    @Query("DELETE FROM tasks WHERE id = :taskId")
+    void deleteTaskById(long taskId);
+
     @Query("SELECT * FROM tasks")
     List<Task> getTasks();
 
-    @Query("SELECT * FROM tasks t " +
+    @Query("SELECT t.*, m.* FROM tasks t " +
             "JOIN materii m ON t.materie_id = m.id " +
             "WHERE m.orar_id = :orarId")
     List<Task> getTasksForOrar(Long orarId);
+
+    @Query("SELECT * FROM tasks WHERE materie_id= :orarId")
+    List<Task> getTasksRightOrar(Long orarId);
 
     @Query("DELETE FROM tasks")
     void deleteAllTasks();

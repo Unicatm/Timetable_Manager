@@ -50,6 +50,8 @@ public class PaginaTasks extends AppCompatActivity {
     //private TaskManager listaTasks = new TaskManager();
     private ActivityResultLauncher<Intent> launcher;
     private static AdapterTask adapter;
+    private Long orarId;
+    private static TasksDAO tasksDAO;
     private final static String URL_TASKS = "https://www.jsonkeeper.com/b/V7VS";
 
     @Override
@@ -64,16 +66,19 @@ public class PaginaTasks extends AppCompatActivity {
         });
 
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
-        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
+        tasksDAO = aplicatieDB.getTasksDAO();
         MaterieDAO materieDAO = aplicatieDB.getMaterieDAO();
 
 //        tasksDB =TasksDB.getInstance(getApplicationContext());
 //        tasksDAO = tasksDB.getTaskDAO();
 
-        Long orarId = getIntent().getLongExtra("orarIdPtTasks", -1L);
+        orarId = getIntent().getLongExtra("orarIdPtTasks", -1L);
         Log.i("ORAR_ID",orarId.toString());
 
+        listaDBTasks.clear();
         listaDBTasks=tasksDAO.getTasksForOrar(orarId);
+
+
         lvListaTasks = findViewById(R.id.lvListaTasks);
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
@@ -81,9 +86,10 @@ public class PaginaTasks extends AppCompatActivity {
                if(result.getData().hasExtra("taskFromIntent")) {
                    Intent intent = result.getData();
                    Task task = (Task) intent.getSerializableExtra("taskFromIntent");
-                   Materie materieDinTask = materieDAO.getMaterieByName(task.getDenMaterie());
-                   Log.i("TASK",materieDinTask.getId().toString());
-                   task.setMaterieId(materieDinTask.getId());
+//                   Materie materieDinTask = materieDAO.getMaterieByName(task.getDenMaterie());
+//                   Log.i("TASK",materieDinTask.getId().toString());
+
+//                   task.setMaterieId(materieDinTask.getId());
 
                    if (task != null) {
                    //listaTasks.add(task);
@@ -92,11 +98,20 @@ public class PaginaTasks extends AppCompatActivity {
                        tasksDAO.insertTask(task);
                        listaDBTasks.clear();
                        listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
+                       List<Task> listaIDMat = new ArrayList<>();
+                       String idTasks = "";
+                       listaIDMat.addAll(tasksDAO.getTasks());
+                       for (int i = 0; i < listaIDMat.size(); i++) {
+                           idTasks+= listaIDMat.get(i).getId() + " ";
+                       }
+                       Log.i("IDURI",idTasks);
+                       Log.i("T_ADD", "Task de adaugat: " +task);
                        adapter.notifyDataSetChanged();
                    }
                }else if(result.getData().hasExtra("taskEditat")){
                    Intent intent = result.getData();
                    Task task = (Task) intent.getSerializableExtra("taskEditat");
+
 
                    if(task!=null){
                        Task taskDeEditat = (Task) intent.getSerializableExtra("editTask");
@@ -111,28 +126,23 @@ public class PaginaTasks extends AppCompatActivity {
 //
                        listaDBTasks.clear();
                        listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
+                       Log.i("TASKE",taskDeEditat.getId().toString());
                        adapter.notifyDataSetChanged();
                    }
                }else if(result.getData().hasExtra("taskSters")){
-
-                   Intent intent = result.getData();
-                   Task task = (Task) intent.getSerializableExtra("taskSters");
-
-                   if(task!=null){
-                       tasksDAO.deleteTask(task);
-                       listaDBTasks.clear();
-                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
-                       adapter.notifyDataSetChanged();
-                   }
+                   listaDBTasks.clear();
+                   Log.i("ORAR_ID",orarId.toString());
+                   listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
+                   adapter.notifyDataSetChanged();
                }
 
            }
         });
 
-        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher);
+        adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher,orarId);
         lvListaTasks.setAdapter(adapter);
 
-        getTasksFromHttps();
+//        getTasksFromHttps();
 
         BottomNavigationView btmNav = findViewById(R.id.btmNav);
         btmNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -144,7 +154,7 @@ public class PaginaTasks extends AppCompatActivity {
                 if(id ==R.id.pgMaterii){
                     intent =new Intent (getApplicationContext(), PaginaMaterii.class);
                     intent.putExtra("orarIdPtMaterii", orarId);
-                    setResult(RESULT_OK, intent);
+                    Log.i("ORAR_ID_MAT_T",orarId.toString());
                     finish();
                     return true;
                 } else if (id == R.id.pgOrar) {
@@ -154,8 +164,9 @@ public class PaginaTasks extends AppCompatActivity {
                 } else if (id == R.id.pgAnunturi) {
                     return true;
                 }else if (id == R.id.pgNotite) {
-                    intent = new Intent(getApplicationContext(), PaginaNotite.class);
-                    startActivity(intent);
+                    intent = new Intent(getApplicationContext(), PaginaNote.class);
+                    intent.putExtra("orarIdPtNote", orarId);
+                    launcher.launch(intent);
                     return true;
                 }
 

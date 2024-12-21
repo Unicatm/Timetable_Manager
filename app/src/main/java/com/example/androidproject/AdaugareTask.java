@@ -3,6 +3,7 @@ package com.example.androidproject;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class AdaugareTask extends AppCompatActivity  {
     private List<String> listaDenMaterii = MateriiManager.getNumeMateriiList();
     private List<String> categoriiList;
     private List<String> listaDenMateriiDB = new ArrayList<>();
+    private Long orarId;
     private Boolean isEditing = false;
 
 
@@ -72,7 +74,7 @@ public class AdaugareTask extends AppCompatActivity  {
         Spinner spnTip = findViewById(R.id.spnTip);
         EditText etDescriere = findViewById(R.id.etDescriere);
 
-        Long orarId = getIntent().getLongExtra("orarIdAdaugare",-1L);
+        orarId = getIntent().getLongExtra("orarIdAdaugare",-1L);
 
         List<Materie> listaMateriiDB = materieDAO.getMateriiOrar(orarId);
         for (Materie materie : listaMateriiDB) {
@@ -95,6 +97,7 @@ public class AdaugareTask extends AppCompatActivity  {
 
         if(editIntent.hasExtra("editTask")){
             isEditing = true;
+            orarId = getIntent().getLongExtra("orarIdAdaugare",-1L);
 
             TextView tvTitlu = findViewById(R.id.tvTitlu);
             tvTitlu.setText("Editeaza taskul");
@@ -103,27 +106,33 @@ public class AdaugareTask extends AppCompatActivity  {
             Button btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
             btnAdaugaTask.setText("Salveaza modificarile");
 
-            Task task = (Task) editIntent.getSerializableExtra("editTask");
-            etDenTask.setText(task.getNumeTask());
+            int position = (int) editIntent.getSerializableExtra("editTask");
+            List<Task> listaTasks = tasksDAO.getTasksRightOrar(orarId);
+            Task taskDeEdit =  listaTasks.get(position);
+
+            etDenTask.setText(taskDeEdit.getNumeTask());
             for(int i=0;i<spnMaterie.getCount();i++){
-                if(task.getDenMaterie().equals(adapterDenMaterie.getItem(i))){
+                if(taskDeEdit.getDenMaterie().equals(adapterDenMaterie.getItem(i))){
                     spnMaterie.setSelection(i);
                 }
             }
 
-            etDeadline.setText(new SimpleDateFormat("dd.MM.yyyy").format(task.getDataDeadline()));
+            etDeadline.setText(new SimpleDateFormat("dd.MM.yyyy").format(taskDeEdit.getDataDeadline()));
 
             for(int i=0;i<spnTip.getCount();i++){
-                if(task.getTipDdl().equals(adapterCateg.getItem(i))){
+                if(taskDeEdit.getTipDdl().equals(adapterCateg.getItem(i))){
                     spnTip.setSelection(i);
                 }
             }
 
-            etDescriere.setText(task.getDescriere());
+            etDescriere.setText(taskDeEdit.getDescriere());
+            Log.i("DE_STERS", "Task de șters: " + listaTasks);
 
             btnStergeTask.setOnClickListener(v->{
-                Intent intent = new Intent();
-                intent.putExtra("taskSters", task);
+                tasksDAO.deleteTask(taskDeEdit);
+
+                Intent intent = new Intent(getApplicationContext(), PaginaTasks.class);
+                intent.putExtra("taskSters", true);
                 setResult(RESULT_OK,intent);
                 finish();
             });
@@ -144,12 +153,17 @@ public class AdaugareTask extends AppCompatActivity  {
                 Categorie tipDdl = Categorie.valueOf(spnTip.getSelectedItem().toString());
                 String descriere = String.valueOf(etDescriere.getText());
 
-                Task task = new Task(denTask,materie,deadline,tipDdl,descriere, (long) -1);
+                Materie materieSelected = materieDAO.getMaterieByName(materie);
+                Long materieId = materieSelected.getOrarId();
+
+                Task task = new Task(denTask,materie,deadline,tipDdl,descriere, materieId);
+
 
                 Intent intent = getIntent();
 
                 if(isEditing){
                     intent.putExtra("taskEditat",task);
+                    isEditing = false;
                 }else{
                     intent.putExtra("taskFromIntent", task);
                 }

@@ -22,6 +22,7 @@ import com.example.androidproject.clase.Orar;
 import com.example.androidproject.customAdapters.AdapterOrar;
 import com.example.androidproject.dataBases.AplicatieDAO;
 import com.example.androidproject.dataBases.AplicatieDB;
+import com.example.androidproject.dataBases.TasksDAO;
 import com.example.androidproject.jsonHttps.HttpsManager;
 import com.example.androidproject.jsonHttps.OrarParser;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView lvOrare;
     private ActivityResultLauncher<Intent> launcher;
     private static final String URL_ORARE = "https://www.jsonkeeper.com/b/G4PH";
+    private FirebaseService firebaseService;
 
 
     @Override
@@ -51,8 +53,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
         AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
+        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
+
+//        tasksDAO.deleteAllTasks();
+
 
         lvOrare = findViewById(R.id.lvOrare);
         //ArrayAdapter<Orar> adapterOrare =new ArrayAdapter<>(getApplicationContext(),R.layout.s,lista);
@@ -62,15 +69,6 @@ public class MainActivity extends AppCompatActivity {
         lista.clear();
         lista.addAll(aplicatieDAO.getOrare());
 
-        Date oraStart;
-        Date oraFinal;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        try {
-            oraStart = sdf.parse("07:00");
-            oraFinal = sdf.parse("18:00");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
             if(result.getResultCode()==RESULT_OK) {
@@ -92,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getOrareFromHttps();
+        //getOrareFromHttps();
 
 
         Button btnCreeareOrar =findViewById(R.id.btnStart);
