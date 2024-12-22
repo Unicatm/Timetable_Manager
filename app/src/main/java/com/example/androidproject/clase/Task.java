@@ -8,42 +8,45 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(tableName = "tasks",foreignKeys = @ForeignKey(entity = Materie.class,parentColumns = "id",childColumns = "materie_id",onDelete = ForeignKey.CASCADE))
+//@Entity(tableName = "tasks",foreignKeys = @ForeignKey(entity = Materie.class,parentColumns = "id",childColumns = "materie_id",onDelete = ForeignKey.CASCADE))
 public class Task implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
-    private Long id;
+    //@PrimaryKey(autoGenerate = true)
+    private String id;
     private String numeTask;
     private String denMaterie;
-    private Date dataDeadline;
-    private Categorie tipDdl;
+    private String dataDeadline;
+    private String tipDdl;
     private String descriere;
-    @ColumnInfo(name = "materie_id")
-    private Long materieId;
+    //@ColumnInfo(name = "materie_id")
+    private Long orarId;
 
 
-    public Long getMaterieId() {
-        return materieId;
+    public Long getOrarId() {
+        return orarId;
     }
 
-    public void setMaterieId(long materieId) {
-        this.materieId = materieId;
+    public void setOrarId(Long orarId) {
+        this.orarId = orarId;
     }
 
-    public Task(String numeTask, String denMaterie, Date dataDeadline, Categorie tipDdl, String descriere, Long materieId) {
+    public Task(String numeTask, String denMaterie, String dataDeadline, String tipDdl, String descriere, Long orarId) {
         this.numeTask = numeTask;
         this.denMaterie = denMaterie;
         this.dataDeadline = dataDeadline;
         this.tipDdl = tipDdl;
         this.descriere = descriere;
-        this.materieId=materieId;
+        this.orarId=orarId;
     }
 
-    public Long getId() {
+    public Task() {
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -63,19 +66,19 @@ public class Task implements Serializable {
         this.denMaterie = denMaterie;
     }
 
-    public Date getDataDeadline() {
+    public String getDataDeadline() {
         return dataDeadline;
     }
 
-    public void setDataDeadline(Date dataDeadline) {
+    public void setDataDeadline(String dataDeadline) {
         this.dataDeadline = dataDeadline;
     }
 
-    public Categorie getTipDdl() {
+    public String getTipDdl() {
         return tipDdl;
     }
 
-    public void setTipDdl(Categorie tipDdl) {
+    public void setTipDdl(String tipDdl) {
         this.tipDdl = tipDdl;
     }
 
@@ -96,7 +99,7 @@ public class Task implements Serializable {
                 ", dataDeadline=" + dataDeadline +
                 ", tipDdl=" + tipDdl +
                 ", descriere='" + descriere + '\'' +
-                ", idMaterie='" + materieId+ '\'' +
+                ", idMaterie='" + orarId+ '\'' +
                 '}';
     }
 }

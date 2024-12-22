@@ -45,31 +45,13 @@ public class TaskParser {
         String nume = jsonObject.getString(NUMETASK);
         String denMat = jsonObject.getString(DENMAT);
 
-        Date dataddl=null;
         String ddl = jsonObject.getString(DATADDL);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        try {
-            dataddl= sdf.parse(ddl);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+
         String tipDdlString = jsonObject.getString(TIPDDL);
-        Categorie tipDdl = null;
-        switch (tipDdlString) {
-            case "TEST":
-                tipDdl = Categorie.TEST;
-                break;
-            case "VERIFICARE":
-                tipDdl = Categorie.VERIFICARE;
-                break;
-            case "EXAMEN":
-                tipDdl = Categorie.EXAMEN;
-                break;
-        }
         String descr = jsonObject.getString(DESC);
 
         Long mat_id = Long.valueOf(jsonObject.getInt(MATERIEID));
 
-        return new Task(nume,denMat,dataddl,tipDdl,descr,mat_id);
+        return new Task(nume,denMat,ddl,tipDdlString,descr,mat_id);
     }
 }

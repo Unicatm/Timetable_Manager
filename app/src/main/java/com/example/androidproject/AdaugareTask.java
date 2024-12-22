@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.androidproject.clase.Categorie;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
+import com.example.androidproject.clase.Nota;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.dataBases.AplicatieDB;
 import com.example.androidproject.dataBases.MaterieDAO;
@@ -39,7 +40,6 @@ public class AdaugareTask extends AppCompatActivity  {
     private FloatingActionButton fabBackBtn;
     private Button btnAdaugaTask;
     private List<String> listaDenMaterii = MateriiManager.getNumeMateriiList();
-    private List<String> categoriiList;
     private List<String> listaDenMateriiDB = new ArrayList<>();
     private Long orarId;
     private Boolean isEditing = false;
@@ -58,7 +58,6 @@ public class AdaugareTask extends AppCompatActivity  {
 
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
         MaterieDAO materieDAO = aplicatieDB.getMaterieDAO();
-        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
 
         // ========= Butoane ==========
 
@@ -84,17 +83,13 @@ public class AdaugareTask extends AppCompatActivity  {
         ArrayAdapter<String> adapterDenMaterie = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,listaDenMateriiDB);
         spnMaterie.setAdapter(adapterDenMaterie);
 
-        categoriiList = new ArrayList<>();
-        for (Categorie categ : Categorie.values()) {
-            categoriiList.add(categ.name());
-        }
+        String categ[] = {"Test","Verificare"};
 
-        ArrayAdapter<String> adapterCateg = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categoriiList);
+        ArrayAdapter<String> adapterCateg = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, categ);
         spnTip.setAdapter(adapterCateg);
 
 
         Intent editIntent = getIntent();
-
         if(editIntent.hasExtra("editTask")){
             isEditing = true;
             orarId = getIntent().getLongExtra("orarIdAdaugare",-1L);
@@ -102,13 +97,12 @@ public class AdaugareTask extends AppCompatActivity  {
             TextView tvTitlu = findViewById(R.id.tvTitlu);
             tvTitlu.setText("Editeaza taskul");
             btnStergeTask.setVisibility(View.VISIBLE);
+            btnStergeTask.setEnabled(true);
 
             Button btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
             btnAdaugaTask.setText("Salveaza modificarile");
 
-            int position = (int) editIntent.getSerializableExtra("editTask");
-            List<Task> listaTasks = tasksDAO.getTasksRightOrar(orarId);
-            Task taskDeEdit =  listaTasks.get(position);
+            Task taskDeEdit = (Task) editIntent.getSerializableExtra("editTask");
 
             etDenTask.setText(taskDeEdit.getNumeTask());
             for(int i=0;i<spnMaterie.getCount();i++){
@@ -117,7 +111,7 @@ public class AdaugareTask extends AppCompatActivity  {
                 }
             }
 
-            etDeadline.setText(new SimpleDateFormat("dd.MM.yyyy").format(taskDeEdit.getDataDeadline()));
+            etDeadline.setText(taskDeEdit.getDataDeadline());
 
             for(int i=0;i<spnTip.getCount();i++){
                 if(taskDeEdit.getTipDdl().equals(adapterCateg.getItem(i))){
@@ -126,13 +120,10 @@ public class AdaugareTask extends AppCompatActivity  {
             }
 
             etDescriere.setText(taskDeEdit.getDescriere());
-            Log.i("DE_STERS", "Task de șters: " + listaTasks);
 
             btnStergeTask.setOnClickListener(v->{
-                tasksDAO.deleteTask(taskDeEdit);
-
                 Intent intent = new Intent(getApplicationContext(), PaginaTasks.class);
-                intent.putExtra("taskSters", true);
+                intent.putExtra("taskSters", taskDeEdit);
                 setResult(RESULT_OK,intent);
                 finish();
             });
@@ -142,26 +133,21 @@ public class AdaugareTask extends AppCompatActivity  {
         btnAdaugaTask = findViewById(R.id.btnAdaugaTask);
         btnAdaugaTask.setOnClickListener(view->{
                 String denTask = String.valueOf(etDenTask.getText());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-                Date deadline =null;
-                try {
-                    deadline = sdf.parse(etDeadline.getText().toString());
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
+                String deadline =etDeadline.getText().toString();
                 String materie = spnMaterie.getSelectedItem().toString();
-                Categorie tipDdl = Categorie.valueOf(spnTip.getSelectedItem().toString());
+                String tipDdl = spnTip.getSelectedItem().toString();
                 String descriere = String.valueOf(etDescriere.getText());
 
-                Materie materieSelected = materieDAO.getMaterieByName(materie);
-                Long materieId = materieSelected.getOrarId();
-
-                Task task = new Task(denTask,materie,deadline,tipDdl,descriere, materieId);
+                Task task = new Task(denTask,materie,deadline,tipDdl,descriere, orarId);
 
 
                 Intent intent = getIntent();
 
                 if(isEditing){
+                    Task taskEditat= (Task) editIntent.getSerializableExtra("editTask");
+                    if (taskEditat != null) {
+                        task.setId(taskEditat.getId());
+                    }
                     intent.putExtra("taskEditat",task);
                     isEditing = false;
                 }else{
@@ -169,7 +155,6 @@ public class AdaugareTask extends AppCompatActivity  {
                 }
                 setResult(RESULT_OK, intent);
                 finish();
-                //startActivity(intent);
         });
 
 

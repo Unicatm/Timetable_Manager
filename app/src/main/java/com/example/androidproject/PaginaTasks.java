@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
+import com.example.androidproject.clase.Nota;
 import com.example.androidproject.clase.Task;
 import com.example.androidproject.clase.TaskManager;
 import com.example.androidproject.customAdapters.AdapterTask;
@@ -37,6 +38,10 @@ import com.example.androidproject.jsonHttps.TaskParser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +58,9 @@ public class PaginaTasks extends AppCompatActivity {
     private Long orarId;
     private static TasksDAO tasksDAO;
     private final static String URL_TASKS = "https://www.jsonkeeper.com/b/V7VS";
+    private FirebaseService firebaseService;
+    private int ItemClicked;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,82 +73,55 @@ public class PaginaTasks extends AppCompatActivity {
             return insets;
         });
 
+        firebaseService = FirebaseService.getInstance();
+
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
-        tasksDAO = aplicatieDB.getTasksDAO();
         MaterieDAO materieDAO = aplicatieDB.getMaterieDAO();
 
-//        tasksDB =TasksDB.getInstance(getApplicationContext());
-//        tasksDAO = tasksDB.getTaskDAO();
 
         orarId = getIntent().getLongExtra("orarIdPtTasks", -1L);
         Log.i("ORAR_ID",orarId.toString());
 
         listaDBTasks.clear();
-        listaDBTasks=tasksDAO.getTasksForOrar(orarId);
+        incarcaTasksFromFire();
 
 
         lvListaTasks = findViewById(R.id.lvListaTasks);
-
-        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
-           if(result.getResultCode() == RESULT_OK){
-               if(result.getData().hasExtra("taskFromIntent")) {
-                   Intent intent = result.getData();
-                   Task task = (Task) intent.getSerializableExtra("taskFromIntent");
-//                   Materie materieDinTask = materieDAO.getMaterieByName(task.getDenMaterie());
-//                   Log.i("TASK",materieDinTask.getId().toString());
-
-//                   task.setMaterieId(materieDinTask.getId());
-
-                   if (task != null) {
-                   //listaTasks.add(task);
-                   //adapter.notifyDataSetChanged();
-
-                       tasksDAO.insertTask(task);
-                       listaDBTasks.clear();
-                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
-                       List<Task> listaIDMat = new ArrayList<>();
-                       String idTasks = "";
-                       listaIDMat.addAll(tasksDAO.getTasks());
-                       for (int i = 0; i < listaIDMat.size(); i++) {
-                           idTasks+= listaIDMat.get(i).getId() + " ";
-                       }
-                       Log.i("IDURI",idTasks);
-                       Log.i("T_ADD", "Task de adaugat: " +task);
-                       adapter.notifyDataSetChanged();
-                   }
-               }else if(result.getData().hasExtra("taskEditat")){
-                   Intent intent = result.getData();
-                   Task task = (Task) intent.getSerializableExtra("taskEditat");
-
-
-                   if(task!=null){
-                       Task taskDeEditat = (Task) intent.getSerializableExtra("editTask");
-
-                       taskDeEditat.setNumeTask(task.getNumeTask());
-                       taskDeEditat.setDenMaterie(task.getDenMaterie());
-                       taskDeEditat.setDescriere(task.getDescriere());
-                       taskDeEditat.setDataDeadline(task.getDataDeadline());
-                       taskDeEditat.setTipDdl(task.getTipDdl());
-
-                       tasksDAO.updateTask(taskDeEditat);
-//
-                       listaDBTasks.clear();
-                       listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
-                       Log.i("TASKE",taskDeEditat.getId().toString());
-                       adapter.notifyDataSetChanged();
-                   }
-               }else if(result.getData().hasExtra("taskSters")){
-                   listaDBTasks.clear();
-                   Log.i("ORAR_ID",orarId.toString());
-                   listaDBTasks.addAll(tasksDAO.getTasksForOrar(orarId));
-                   adapter.notifyDataSetChanged();
-               }
-
-           }
-        });
-
         adapter = new AdapterTask(getApplicationContext(), R.layout.card_task, listaDBTasks,getLayoutInflater(),launcher,orarId);
         lvListaTasks.setAdapter(adapter);
+
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
+            Log.d("DEBUG", "onActivityResult a fost apelat cu codul " + result.getResultCode());
+            if(result.getResultCode() == RESULT_OK) {
+                if (result.getData().hasExtra("taskFromIntent")) {
+                    Intent intent = result.getData();
+                    Task task = (Task) intent.getSerializableExtra("taskFromIntent");
+
+                    if (task != null) {
+//                   listaDBTasks.add(task);
+//                   adapter.notifyDataSetChanged();
+
+                        firebaseService.insertTask(task);
+                        incarcaTasksFromFire();
+                    }
+                } else if (result.getData().hasExtra("taskEditat")) {
+                    Intent intent = result.getData();
+                    Task task = (Task) intent.getSerializableExtra("taskEditat");
+
+                    firebaseService.updateTask(task);
+                    incarcaTasksFromFire();
+                } else if (result.getData().hasExtra("taskSters")) {
+                    Intent intent = result.getData();
+                    Task taskSters = (Task) intent.getSerializableExtra("taskSters");
+                    Log.e("STERG", result.getData().toString());
+                    if (taskSters != null) {
+                        firebaseService.deleteTask(taskSters);
+                        incarcaTasksFromFire();
+                    }
+                }
+            }
+        });
+
 
 //        getTasksFromHttps();
 
@@ -174,6 +155,16 @@ public class PaginaTasks extends AppCompatActivity {
             }
         });
 
+        lvListaTasks.setOnItemClickListener((adapterView,view,position,l)->{
+            ItemClicked = position;
+
+            Task task = listaDBTasks.get(position);
+            Intent intent = new Intent(getApplicationContext(), AdaugareTask.class);
+            intent.putExtra("orarIdAdaugare", orarId);
+            intent.putExtra("editTask",task);
+            launcher.launch(intent);
+        });
+
         fabAdaugaTask = findViewById(R.id.fabAdaugaTask);
         fabAdaugaTask.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), AdaugareTask.class);
@@ -199,4 +190,28 @@ public class PaginaTasks extends AppCompatActivity {
         };
         thread.start();
     }
+
+    private void incarcaTasksFromFire() {
+        DatabaseReference tasksRef = firebaseService.getReference("tasks");
+        tasksRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listaDBTasks.clear();
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    Task task = taskSnapshot.getValue(Task.class);
+                    if (task != null && task.getOrarId().equals(orarId)) {
+                        listaDBTasks.add(task);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", error.getMessage());
+            }
+        });
+    }
+
+
 }

@@ -12,7 +12,7 @@ import com.example.androidproject.clase.Orar;
 import com.example.androidproject.clase.Task;
 
 @TypeConverters({Converters.class})
-@Database(entities = {Orar.class ,Materie.class, Task.class},version = 4,exportSchema = false)
+@Database(entities = {Orar.class ,Materie.class},version = 5,exportSchema = false)
 public abstract class AplicatieDB extends RoomDatabase {
     private static final String dbName = "aplicatie.db";
     private static AplicatieDB instance;

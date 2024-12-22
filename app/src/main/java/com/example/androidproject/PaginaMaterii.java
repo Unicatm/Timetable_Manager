@@ -84,10 +84,10 @@ public class PaginaMaterii extends AppCompatActivity {
             listaDBMaterii = new ArrayList<>();
         }
 
-        for (Materie m : listaDBMaterii) {
-            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
-            m.setNoAssignments(numarTaskuri);
-        }
+//        for (Materie m : listaDBMaterii) {
+//            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
+//            m.setNoAssignments(numarTaskuri);
+//        }
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
 
 
@@ -108,10 +108,10 @@ public class PaginaMaterii extends AppCompatActivity {
                         materiiDAO.insertMaterie(materie);
                         listaDBMaterii.clear();
 
-                        for (Materie m : listaDBMaterii) {
-                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
-                            m.setNoAssignments(numarTaskuri);
-                        }
+//                        for (Materie m : listaDBMaterii) {
+//                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
+//                            m.setNoAssignments(numarTaskuri);
+//                        }
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
 
                     }
@@ -183,7 +183,6 @@ public class PaginaMaterii extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), PaginaNote.class);
                     intent.putExtra("orarIdPtNote", orarId);
                     launcher.launch(intent);
-                    startActivity(intent);
                     return true;
                 }
 

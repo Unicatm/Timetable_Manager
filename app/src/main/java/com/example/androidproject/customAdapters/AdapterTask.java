@@ -63,7 +63,7 @@ public class AdapterTask extends ArrayAdapter<Task> {
         Task task = tasks.get(position);
 
         MaterialCardView card = view.findViewById(R.id.cardTask);
-        FloatingActionButton fabSetariTask = view.findViewById(R.id.fabSetariTask);
+//        FloatingActionButton fabSetariTask = view.findViewById(R.id.fabSetariTask);
 
         TextView tvDenTask = view.findViewById(R.id.tvDenTask);
         TextView tvDescrTask = view.findViewById(R.id.tvDescTask);
@@ -74,31 +74,31 @@ public class AdapterTask extends ArrayAdapter<Task> {
         tvDenTask.setText(task.getNumeTask());
         tvDescrTask.setText(task.getDescriere());
         tvDenMaterie.setText(task.getDenMaterie());
-        tvDeadline.setText(new SimpleDateFormat("dd.MM.yyyy").format(task.getDataDeadline()));
+        tvDeadline.setText(task.getDataDeadline());
 
         //TIMP RAMAS DDL
-        LocalDate dataCurenta = LocalDate.now();
+//        LocalDate dataCurenta = LocalDate.now();
+//
+//        LocalDate deadline = task.getDataDeadline().toInstant()
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDate();
+//
+//        long zileRamase = ChronoUnit.DAYS.between(dataCurenta, deadline);
+//
+//        tvTimeLeft.setText(zileRamase + " zile");
+//
+//        if(zileRamase<7){
+//            card.setCardBackgroundColor(ContextCompat.getColor(this.getContext(),R.color.whitePurple));
+//            card.setStrokeColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
+//            tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
+//        }
 
-        LocalDate deadline = task.getDataDeadline().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        long zileRamase = ChronoUnit.DAYS.between(dataCurenta, deadline);
-
-        tvTimeLeft.setText(zileRamase + " zile");
-
-        if(zileRamase<7){
-            card.setCardBackgroundColor(ContextCompat.getColor(this.getContext(),R.color.whitePurple));
-            card.setStrokeColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
-            tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
-        }
-
-        fabSetariTask.setOnClickListener(v -> {
-            Intent intent = new Intent(context.getApplicationContext(), AdaugareTask.class);
-            intent.putExtra("editTask", position);
-            intent.putExtra("orarIdAdaugare",orarId);
-            launcher.launch(intent);
-        });
+//        fabSetariTask.setOnClickListener(v -> {
+//            Intent intent = new Intent(context.getApplicationContext(), AdaugareTask.class);
+//            intent.putExtra("editTask", task);
+//            intent.putExtra("orarIdAdaugare",orarId);
+//            launcher.launch(intent);
+//        });
 
         return view;
     }

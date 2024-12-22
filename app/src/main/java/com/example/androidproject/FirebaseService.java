@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.Nota;
 import com.example.androidproject.clase.Orar;
+import com.example.androidproject.clase.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,6 +64,29 @@ public class FirebaseService {
             return;
         }
         reference.child("note").child(nota.getId()).removeValue();
+    }
+
+    public void insertTask(Task task) {
+        if (task == null || task.getId() != null) {
+            return;
+        }
+        String id =  reference.child("tasks").push().getKey();
+        task.setId(id);
+        reference.child("tasks").child(task.getId()).setValue(task);
+    }
+
+    public void updateTask(Task task) {
+        if (task == null || task.getId() == null) {
+            return;
+        }
+        reference.child("tasks").child(task.getId()).setValue(task);
+    }
+
+    public void deleteTask(Task task) {
+        if (task == null || task.getId() == null) {
+            return;
+        }
+        reference.child("tasks").child(task.getId()).removeValue();
     }
 
 }
