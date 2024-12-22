@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,28 +78,40 @@ public class AdapterTask extends ArrayAdapter<Task> {
         tvDeadline.setText(task.getDataDeadline());
 
         //TIMP RAMAS DDL
-//        LocalDate dataCurenta = LocalDate.now();
-//
-//        LocalDate deadline = task.getDataDeadline().toInstant()
-//                .atZone(ZoneId.systemDefault())
-//                .toLocalDate();
-//
-//        long zileRamase = ChronoUnit.DAYS.between(dataCurenta, deadline);
-//
-//        tvTimeLeft.setText(zileRamase + " zile");
-//
-//        if(zileRamase<7){
-//            card.setCardBackgroundColor(ContextCompat.getColor(this.getContext(),R.color.whitePurple));
-//            card.setStrokeColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
-//            tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
-//        }
+        LocalDate dataCurenta = LocalDate.now();
 
-//        fabSetariTask.setOnClickListener(v -> {
-//            Intent intent = new Intent(context.getApplicationContext(), AdaugareTask.class);
-//            intent.putExtra("editTask", task);
-//            intent.putExtra("orarIdAdaugare",orarId);
-//            launcher.launch(intent);
-//        });
+        String sData = task.getDataDeadline();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+
+        Date ddl = null;
+        try {
+            ddl= sdf.parse(sData);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        LocalDate deadline = ddl.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        long zileRamase = ChronoUnit.DAYS.between(dataCurenta, deadline);
+
+
+        tvTimeLeft.setText(zileRamase + " zile");
+
+        if(zileRamase<7 && zileRamase>=0){
+            tvTimeLeft.setText(zileRamase + " zile");
+            card.setCardBackgroundColor(ContextCompat.getColor(this.getContext(),R.color.whitePurple));
+            card.setStrokeColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
+            tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkPurple));
+        }else if(zileRamase<0){
+            tvDenMaterie.setBackgroundColor(Color.TRANSPARENT);
+            tvDenMaterie.setTextColor(Color.RED);
+            tvTimeLeft.setText("Termen trecut cu "+ Math.abs(zileRamase) + " zile");
+            card.setCardBackgroundColor(ContextCompat.getColor(this.getContext(),R.color.whiteRed));
+            card.setStrokeColor(ContextCompat.getColor(this.getContext(), R.color.darkRed));
+            tvTimeLeft.setTextColor(ContextCompat.getColor(this.getContext(), R.color.darkRed));
+        }
 
         return view;
     }

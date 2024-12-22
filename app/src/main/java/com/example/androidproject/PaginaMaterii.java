@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +26,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.androidproject.clase.Materie;
 import com.example.androidproject.clase.MateriiManager;
+import com.example.androidproject.clase.Orar;
+import com.example.androidproject.clase.Task;
 import com.example.androidproject.customAdapters.AdapterMaterie;
 import com.example.androidproject.dataBases.AplicatieDAO;
 import com.example.androidproject.dataBases.AplicatieDB;
@@ -39,7 +42,11 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +63,8 @@ public class PaginaMaterii extends AppCompatActivity {
     private Long orarId;
     private MaterieDAO materiiDAO;
     private static final String URL_MATERII = "https://www.jsonkeeper.com/b/0JB8";
+    private FirebaseService firebaseService;
+    private List<Task> listaTaskuriFirebase = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +78,11 @@ public class PaginaMaterii extends AppCompatActivity {
         });
 
 
+        firebaseService = FirebaseService.getInstance();
+
         AplicatieDB aplicatieDB = AplicatieDB.getInstance(getApplicationContext());
         materiiDAO = aplicatieDB.getMaterieDAO();
-        TasksDAO tasksDAO = aplicatieDB.getTasksDAO();
+        AplicatieDAO aplicatieDAO = aplicatieDB.getAplicatieDAO();
 
         orarId = getIntent().getLongExtra("orarId", -1);
         if(orarId==-1){
@@ -84,10 +95,29 @@ public class PaginaMaterii extends AppCompatActivity {
             listaDBMaterii = new ArrayList<>();
         }
 
-//        for (Materie m : listaDBMaterii) {
-//            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
-//            m.setNoAssignments(numarTaskuri);
-//        }
+        Orar orar = aplicatieDAO.getOrarById(orarId);
+
+        TextView tvFacultateAn = findViewById(R.id.tvFacultateAn);
+        tvFacultateAn.setText(orar.getFacultate().toString()+ " anul " + orar.getAn().toString() + " sem. "+ orar.getSemestru().toString());
+
+        incarcaTasksFromFire(taskList->{
+            listaTaskuriFirebase = taskList;
+
+            for (Materie m : listaDBMaterii) {
+                int no = 0;
+                for (Task task : listaTaskuriFirebase) {
+                    if (m.getNumeMaterie().equals(task.getDenMaterie())) {
+                        no++;
+                    }
+                }
+                Log.e("LISTA",m.getNumeMaterie() + no);
+                m.setNoAssignments(no);
+                materiiDAO.updateMaterie(m);
+            }
+            adapter.notifyDataSetChanged();
+        });
+
+
         lvListaMaterii = findViewById(R.id.lvListaMaterii);
 
 
@@ -108,11 +138,8 @@ public class PaginaMaterii extends AppCompatActivity {
                         materiiDAO.insertMaterie(materie);
                         listaDBMaterii.clear();
 
-//                        for (Materie m : listaDBMaterii) {
-//                            int numarTaskuri = tasksDAO.getTaskCountForMaterie(m.getNumeMaterie());
-//                            m.setNoAssignments(numarTaskuri);
-//                        }
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
+                        adapter.notifyDataSetChanged();
 
                     }
                 }else if(result.getData().hasExtra("materieEditata")){
@@ -135,21 +162,12 @@ public class PaginaMaterii extends AppCompatActivity {
                         listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
                         adapter.notifyDataSetChanged();
 
-//                        AdapterMaterie adapterNou = (AdapterMaterie) lvListaMaterii.getAdapter();
                     }
                 }else if(result.getData().hasExtra("materieStearsa")){
                     listaDBMaterii.clear();
                     listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
                     adapter.notifyDataSetChanged();
                 }
-//                }else if(result.getData().hasExtra("orarIdPtMaterii")){
-//                    Intent intent = result.getData();
-//                    orarId = intent.getLongExtra("orarIdPtMaterii", -1L);
-//                    Log.i("ORAR_ID_MAT_INT",orarId.toString());
-//                    listaDBMaterii = materiiDAO.getMateriiOrar(orarId);
-//                    adapter.notifyDataSetChanged();
-//
-//                }
             }
         });
 
@@ -209,24 +227,21 @@ public class PaginaMaterii extends AppCompatActivity {
         chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) {
                 listaDBMaterii.clear();
-                listaDBMaterii.addAll(materiiDAO.getMaterii());
+                listaDBMaterii.addAll(materiiDAO.getMateriiOrar(orarId));
                 adapter.notifyDataSetChanged();
             }else{
                 int checkedId = checkedIds.get(0);
 
                 if (checkedId == R.id.chipAZ) {
                     Collections.sort(listaDBMaterii, Comparator.comparing(Materie::getNumeMaterie));
-                    adapter.notifyDataSetChanged();
 
                 } else if (checkedId == R.id.chipZA) {
                     Collections.sort(listaDBMaterii, (m1, m2) -> m2.getNumeMaterie().compareTo(m1.getNumeMaterie()));
-                    adapter.notifyDataSetChanged();
 
                 } else if (checkedId == R.id.chipAssignments) {
-/*                        materiiList.clear();
-                        materiiList.addAll(originalMateriiList);
-                        subjectAdapter.notifyDataSetChanged();*/
+                    Collections.sort(listaDBMaterii, (m1, m2) -> Integer.compare(m2.getNoAssignments(), m1.getNoAssignments()));
                 }
+                adapter.notifyDataSetChanged();
             }
 
         });
@@ -248,6 +263,28 @@ public class PaginaMaterii extends AppCompatActivity {
             }
         };
         thread.start();
+    }
+
+    private void incarcaTasksFromFire(Callback callback) {
+        DatabaseReference tasksRef = firebaseService.getReference("tasks");
+        tasksRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Task> tempTaskList = new ArrayList<>();
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    Task task = taskSnapshot.getValue(Task.class);
+                    if (task != null && task.getOrarId().equals(orarId)) {
+                        tempTaskList.add(task);
+                    }
+                }
+                callback.onTaskListLoaded(tempTaskList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", error.getMessage());
+            }
+        });
     }
 
 }

@@ -19,4 +19,7 @@ public interface AplicatieDAO {
 
     @Query("SELECT * FROM orare")
     List<Orar> getOrare();
+
+    @Query("SELECT * FROM orare WHERE id= :idOrar")
+    Orar getOrarById(Long idOrar);
 }

@@ -1,5 +1,9 @@
 package com.example.androidproject;
 
-public interface Callback<R> {
-    void runOnUI(R rezultat);
+import com.example.androidproject.clase.Task;
+
+import java.util.List;
+
+public interface Callback {
+    void onTaskListLoaded(List<Task> taskList);
 }

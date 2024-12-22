@@ -5,5 +5,8 @@
     <color name="lightPurple">#e0aaff</color>
     <color name="darkPurple">#7b2cbf</color>
     <color name="whitePurple">#F8EBFF</color>
+    <color name="lightRed">#FF9191</color>
+    <color name="darkRed">#BF2C2C</color>
+    <color name="whiteRed">#FFEBEB</color>
 
 </resources>
