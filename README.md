@@ -1,4 +1,4 @@
-# Timetable Application - Android Project  
+# University Project - Timetable Application 
 
 This application aims to simplify university schedule management, including classes, assignments, and grades. It was developed using Android Studio with Java and a Firebase database.  
 
